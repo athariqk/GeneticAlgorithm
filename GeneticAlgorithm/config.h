@@ -1,0 +1,4 @@
+#pragma once
+
+#define MAX_POPULATION 500
+#define INITIAL_SPECIES_POPULATION 1

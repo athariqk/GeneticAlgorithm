@@ -1,0 +1,16 @@
+# others
+.obj
+.pdb
+
+# folders
+/Debug
+/x64
+/GeneticAlgorithm/Debug
+/GeneticAlgorithm/x64
+
+# visual studio project files
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
