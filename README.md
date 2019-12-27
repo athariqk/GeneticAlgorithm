@@ -3,4 +3,4 @@ Kasterisk's repository for experimenting with (what hopefully would become) a se
 
 No GA yet, as works are still being done for the frameworks itself.
 
-Note: To build the project is not possible yet, manually insert the project's source files to an existing project.
+Note: To build the project is not yet possible, manually insert all of the source files to an existing one.
