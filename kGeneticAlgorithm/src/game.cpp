@@ -1,7 +1,7 @@
 #include "game.h"
 
-#include "environment.h"
-#include "species.h"
+#include "Simulation/environment.h"
+#include "Simulation/species.h"
 
 #include "Vector2D.h"
 
@@ -21,6 +21,7 @@ Game::~Game()
 
 EntityManager* Game::emInstance = nullptr;
 Game* Game::staticInstance = nullptr;
+
 SDL_Renderer* Game::_SDLRenderer = nullptr;
 
 Game* Game::Get() {
@@ -33,6 +34,8 @@ EntityManager* Game::GetEntityManager()
 }
 
 void Game::Init(const char* title, int width, int height, bool fullscreen) {
+	
+
 	int flags = 0;
 
 	if (fullscreen) {
@@ -51,14 +54,15 @@ void Game::Init(const char* title, int width, int height, bool fullscreen) {
 			LOG_TRACE("[Game] SDL Window created, resolution: {} x {}", width, height);
 		}
 		if (_SDLRenderer) {
-			LOG_TRACE("[Game] SDL Renderer created");
-			SDL_SetRenderDrawColor(_SDLRenderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+		LOG_TRACE("[Game] SDL Renderer created");
+			SDL_SetRenderDrawColor(_SDLRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 		}
 
 		m_running = true;
 
 		Species primum = env.createSpecies("Primum", "Primus", "Specius", 10.0f, 5.0f, 10.0f, 10.0f);
 		env.addSpeciesToEnvironment(&primum, 50, true);
+		env.spawnFood(20);
 
 	} else {
 		m_running = false;
@@ -87,6 +91,7 @@ void Game::Update() {
 void Game::Render() {
 	SDL_RenderClear(_SDLRenderer);
 	GetEntityManager()->Draw();
+	SDL_SetRenderDrawColor(_SDLRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderPresent(_SDLRenderer);
 }
 

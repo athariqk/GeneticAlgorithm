@@ -1,13 +1,8 @@
 #include "environment.h"
 #include "game.h"
+#include "food.h"
 
-#include "Components.h"
-
-Environment::Environment()
-{}
-
-Environment::~Environment()
-{}
+#include "Entities/Components.h"
 
 Species Environment::createSpecies(const std::string & name, const std::string & genus,
 	const std::string epithet, float aggression, float fear, float size, float speed)
@@ -40,14 +35,21 @@ void Environment::spawnCell(Species& species, int amount) {
 		if (i.species == &species) {
 			for (int n = 0; n < amount; n++) {
 				auto& cell(Game::GetEntityManager()->addEntity());
-				cell.AddComponent<TransformComponent>(std::rand() % 800 + 10,
-					std::rand() % 600 + 10);
-				cell.AddComponent<MicrobeComponent>(species, "assets/cell.png");
+				cell.AddComponent<TransformComponent>(std::rand()
+					% WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10);
+				cell.AddComponent<MicrobeComponent>(species);
 			}
 		}
 	}
 
 	LOG_INFO("Spawned {} cells of species {}", amount, species.getFormattedName(true));
+}
+
+void Environment::spawnFood(int amount) {
+	for (int i = 0; i < amount; i++) {
+		auto& food(Game::GetEntityManager()->addEntity());
+		food.AddComponent<Food>();
+	}
 }
 
 Species* Environment::getSpecies(uint64_t index) {

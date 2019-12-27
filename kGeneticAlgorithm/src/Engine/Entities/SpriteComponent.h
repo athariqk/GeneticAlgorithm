@@ -13,22 +13,26 @@ public:
 		texture = TextureManager::LoadTexture(path);
 	}
 
-	~SpriteComponent() {}
+	~SpriteComponent() {
+		SDL_DestroyTexture(texture);
+	}
 
-	void Init() override {
+	void OnInit() override {
 		transform = &entity->GetComponent<TransformComponent>();
 
 		srcRect.x = srcRect.y = 0;
-		srcRect.w = srcRect.h = 32;
-		destRect.w = destRect.h = 64;
+		srcRect.w = transform->width;
+		srcRect.h = transform->height;
 	}
 
-	void Update() override {
+	void OnUpdate() override {
 		destRect.x = (int)transform->position.x;
 		destRect.y = (int)transform->position.y;
+		destRect.w = transform->width * transform->scale;
+		destRect.h = transform->height * transform->scale;
 	}
 
-	void Draw() override {
+	void OnDraw() override {
 		TextureManager::Draw(texture, srcRect, destRect);
 	}
 

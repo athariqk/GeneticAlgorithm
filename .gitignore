@@ -5,8 +5,8 @@
 # folders
 /Debug
 /x64
-/GeneticAlgorithm/Debug
-/GeneticAlgorithm/x64
+/kGeneticAlgorithm/Debug
+/kGeneticAlgorithm/x64
 
 # visual studio project files
 .vs/

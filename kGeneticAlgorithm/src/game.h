@@ -2,7 +2,7 @@
 
 #include "config.h"
 
-#include "Components.h"
+#include "Entities/Components.h"
 
 #include <string>
 

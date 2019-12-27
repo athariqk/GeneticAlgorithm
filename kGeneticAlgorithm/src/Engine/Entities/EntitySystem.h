@@ -1,4 +1,5 @@
 #pragma once
+#include "Logger.h"
 
 #include <vector>
 #include <memory>
@@ -31,23 +32,24 @@ class Component {
 public:
 	Entity* entity;
 
-	virtual void Init() {}
-	virtual void Update() {}
-	virtual void Draw() {}
+	virtual void OnInit() {}
+	virtual void OnUpdate() {}
+	virtual void OnDraw() {}
+	virtual void OnClear() {}
 
 	virtual ~Component() {}
 };
 
 class Entity {
 public:
-	void Update() {
+	void OnUpdate() {
 		for (auto& c : components)
-			c->Update();
+			c->OnUpdate();
 	}
 
-	void Draw() {
+	void OnDraw() {
 		for (auto& c : components)
-			c->Draw();
+			c->OnDraw();
 	}
 
 	bool isEnabled() const { return enabled;  }
@@ -68,7 +70,7 @@ public:
 		componentArray[getComponentTypeID<T>()] = c;
 		componentBitSet[getComponentTypeID<T>()] = true;
 
-		c->Init();
+		c->OnInit();
 		return *c;
 	}
 
@@ -90,12 +92,12 @@ class EntityManager {
 public:
 	void Update() {
 		for (auto& e : entities)
-			e->Update();
+			e->OnUpdate();
 	}
 
 	void Draw() {
 		for (auto& e : entities)
-			e->Draw();
+			e->OnDraw();
 	}
 	
 	void Refresh() {
