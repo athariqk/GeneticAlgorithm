@@ -10,15 +10,31 @@ public:
 
 	int height = 32;
 	int width = 32;
-	int scale = 1;
+	float scale = 1;
 
 	TransformComponent() {
-		position.x = 0.0f;
-		position.y = 0.0f;
+		position.Zero();
 	}
 
+	//! \brief Construct with only scale parameter
+	TransformComponent(float sc) {
+		position.Zero();
+		scale = sc;
+	}
+
+	//! \brief  Construct with x, y position paremeter
 	TransformComponent(float x, float y) {
 		position.x = x;
 		position.y = y;
 	}
+
+	//! \brief  Construct with all transform elements parameter
+	TransformComponent(float x, float y, int w, int h, float sc) {
+		position.x = x;
+		position.y = y;
+		width = w;
+		height = h;
+		scale = sc;
+	}
+
 };

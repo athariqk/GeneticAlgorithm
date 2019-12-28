@@ -8,6 +8,11 @@
 /kGeneticAlgorithm/Debug
 /kGeneticAlgorithm/x64
 
+# ThirdParty folders
+# TODO: allow these
+/kGeneticAlgorithm/ThirdParty/SDL2_image
+/kGeneticAlgorithm/ThirdParty/SDL2
+
 # visual studio project files
 .vs/
 **.sln

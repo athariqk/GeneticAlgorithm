@@ -4,21 +4,7 @@
 
 #include "Entities/Components.h"
 
-Species Environment::createSpecies(const std::string & name, const std::string & genus,
-	const std::string epithet, float aggression, float fear, float size, float speed)
-{
-	Species species = Species(name);
-
-	species.genus = genus;
-	species.epithet = epithet;
-	species.aggression = aggression;
-	species.fear = fear;
-	species.size = size;
-	species.speed = speed;
-
-	return species;
-}
-
+/*
 void Environment::addSpeciesToEnvironment(Species* species, int population, bool spawnCells)
 {
 	speciesInEnvironment.emplace_back(SpeciesInEnvironment{ species, population });
@@ -29,25 +15,38 @@ void Environment::addSpeciesToEnvironment(Species* species, int population, bool
 	if (spawnCells)
 		spawnCell(*species, population);
 }
+*/
 
+/*
 void Environment::spawnCell(Species& species, int amount) {	
 	for (auto& i : speciesInEnvironment) {
 		if (i.species == &species) {
 			for (int n = 0; n < amount; n++) {
 				auto& cell(Game::GetEntityManager()->addEntity());
+				auto component = cell.GetComponent<OrganismComponent>();
 				cell.AddComponent<TransformComponent>(std::rand()
-					% WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10);
-				cell.AddComponent<MicrobeComponent>(species);
+					% WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10,
+					32, 32, 16);
+				cell.AddComponent<OrganismComponent>(species);
+				LOG_INFO("Cell of species: {} \n With traits: \n Aggresion: {} \n Fear: {} \n Size: {} \n Speed: {} \n Strength: {}",
+					component.getSpeciesName(),
+					component.getSpecies().genes.m_DNA.aggression,
+					component.getSpecies().genes.m_DNA.fear,
+					component.getSpecies().genes.m_DNA.size,
+					component.getSpecies().genes.m_DNA.speed,
+					component.getSpecies().genes.m_DNA.strength
+				);
 			}
 		}
 	}
 
 	LOG_INFO("Spawned {} cells of species {}", amount, species.getFormattedName(true));
 }
+*/
 
 void Environment::spawnFood(int amount) {
 	for (int i = 0; i < amount; i++) {
-		auto& food(Game::GetEntityManager()->addEntity());
+		auto& food(Game::GetEntityManager()->AddEntity());
 		food.AddComponent<Food>();
 	}
 }

@@ -1,15 +1,25 @@
 #include "species.h"
+#include "game.h"
 
 #include <iostream>
 
-Species::Species(const std::string& name) : name(name) {}
+Species::Species(const std::string& name,
+	const std::string& genus, const std::string& epithet) :
+	name(name),
+	genus(genus),
+	epithet(epithet)
+{}
 
 Species::~Species() {}
 
-Species* Species::_static(const std::string& name) {
-	return new Species(name);
+bool Species::addOrganism(OrganismComponent* organism) {
+	auto& m_org(Game::GetEntityManager()->AddEntity());
+	m_org.AddComponent<OrganismComponent>(organism);
+	m_org.AddGroup(1);
+	return true;
 }
 
+/*
 void Species::setPopulation(int32_t population)
 {
 	if (population < 0) {
@@ -19,6 +29,7 @@ void Species::setPopulation(int32_t population)
 		this->population = population;
 	}
 }
+*/
 
 std::string Species::getFormattedName(bool identifier)
 {
@@ -30,4 +41,8 @@ std::string Species::getFormattedName(bool identifier)
 		result += " (" + name + ")";
 
 	return result;
+}
+
+size_t Species::GetID() {
+	return incrementor++;
 }

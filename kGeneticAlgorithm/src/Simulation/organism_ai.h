@@ -2,11 +2,11 @@
 
 #include "Entities/Components.h"
 
-class MicrobeAI : public Component
+class OrganismAI : public Component
 {
 public:
-	MicrobeAI();
-	~MicrobeAI();
+	OrganismAI();
+	~OrganismAI();
 
 	enum AI_STATE {
 		NEUTRAL,

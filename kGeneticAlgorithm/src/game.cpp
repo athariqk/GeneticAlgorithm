@@ -4,6 +4,7 @@
 #include "Simulation/species.h"
 
 #include "Vector2D.h"
+#include "Entities/Components.h"
 
 Environment env;
 EntityManager* entityManager = new EntityManager();
@@ -23,6 +24,7 @@ EntityManager* Game::emInstance = nullptr;
 Game* Game::staticInstance = nullptr;
 
 SDL_Renderer* Game::_SDLRenderer = nullptr;
+SDL_Event Game::m_event;
 
 Game* Game::Get() {
 	return staticInstance;
@@ -60,8 +62,14 @@ void Game::Init(const char* title, int width, int height, bool fullscreen) {
 
 		m_running = true;
 
-		Species primum = env.createSpecies("Primum", "Primus", "Specius", 10.0f, 5.0f, 10.0f, 10.0f);
-		env.addSpeciesToEnvironment(&primum, 50, true);
+		// Create the key controller
+		auto& keyEvent(GetEntityManager()->AddEntity());
+		keyEvent.AddComponent<KeyEvent>();
+
+		// Initialize first species
+		auto& primum(GetEntityManager()->AddEntity());
+		primum.AddComponent<Species>("Primum", "Primus", "Specius");
+		//env.addSpeciesToEnvironment(&primum, 10, true);
 		env.spawnFood(20);
 
 	} else {
@@ -71,7 +79,6 @@ void Game::Init(const char* title, int width, int height, bool fullscreen) {
 }
 
 void Game::HandleEvents() {
-	SDL_Event m_event;
 	SDL_PollEvent(&m_event);
 
 	switch (m_event.type) {

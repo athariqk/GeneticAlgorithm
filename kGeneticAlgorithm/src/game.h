@@ -2,14 +2,14 @@
 
 #include "config.h"
 
-#include "Entities/Components.h"
+#include "Entities/EntitySystem.h"
 
 #include <string>
 
 #include <SDL.h>
 #include <SDL_image.h>
 
-class MicrobeComponent;
+class OrganismComponent;
 
 class Game
 {
@@ -28,6 +28,8 @@ public:
 	static Game* Get();
 
 	static SDL_Renderer* _SDLRenderer;
+
+	static SDL_Event m_event;
 
 	static EntityManager* GetEntityManager();
 

@@ -1,38 +1,57 @@
 #pragma once
+#include "population.h"
+#include "genes.h"
+#include "organism.h"
+
+#include "Entities/Components.h"
 
 #include <stdint.h>
 #include <string>
 #include <vector>
 
-class Species
+class Species : Component
 {
 public:
 	Species() = default;
-	Species(const std::string& name);
+	Species(const std::string& name, const std::string& genus,
+		const std::string& epithet);
 	~Species();
 
-	void setPopulation(int32_t population);
+	size_t GetID();
+
+	//void setPopulation(int32_t population);
+
+	bool addOrganism(OrganismComponent* organism);
+
+	bool removeOrganism(OrganismComponent* organism);
+
+	bool reproduce(uint64_t generation, Population* population,
+		std::vector<Species*> sortedSpecies);
+
+	bool sortFitness();
+
+	int age;
+	double averageFitness;
+	double maxFitness;
+	double maxFitnessEver;
+
+	std::vector<OrganismComponent*> organisms;
 
 	std::string getFormattedName(bool identifier);
-
-	static Species* _static(const std::string& name);
 
 	std::string name;
 	std::string genus;
 	std::string epithet;
 
-	float aggression = 100.0f;
-	float fear = 100.0f;
-	float size = 10.0f;
-	float speed = 5.0f;
-	float strength = 10.0f;
-
-	float mutationRate = 1.0f;
+	Genes genes;
 
 	bool finished;
 
 	int32_t population;
 
 	int32_t generation;
+
+private:
+	size_t incrementor;
 };
 

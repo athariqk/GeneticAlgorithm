@@ -14,7 +14,7 @@ SDL_Texture* TextureManager::LoadTexture(const char* texture) {
 	SDL_FreeSurface(tempSurface);
 
 	if (tex == nullptr) {
-		LOG_ERROR("[TextureManager] Could not load texture file {}!", texture);
+		LOG_ERROR("[TextureManager] Could not load texture file {}! {}", texture);
 		return NULL;
 	}
 	LOG_TRACE("[TextureManager] Loaded texture file {}", texture);
