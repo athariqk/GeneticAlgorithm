@@ -69,8 +69,13 @@ void Game::Init(const char* title, int width, int height, bool fullscreen) {
 		// Initialize first species
 		auto& primum(GetEntityManager()->AddEntity());
 		primum.AddComponent<Species>("Primum", "Primus", "Specius");
+		// Spawn organism 4 times
+        primum.AddComponent<OrganismComponent>();
+        primum.AddComponent<OrganismComponent>();
+        primum.AddComponent<OrganismComponent>();
+        primum.AddComponent<OrganismComponent>();
 		//env.addSpeciesToEnvironment(&primum, 10, true);
-		env.spawnFood(20);
+		env.spawnNutrients(20);
 
 	} else {
 		m_running = false;

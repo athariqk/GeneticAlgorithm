@@ -1,5 +1,7 @@
 #include "Vector2D.h"
 
+#include <cmath>
+
 Vector2D::Vector2D() {
 	x = 0.0f;
 	y = 0.0f;
@@ -95,4 +97,24 @@ Vector2D& Vector2D::Zero() {
 	this->y = 0;
 
 	return* this;
+}
+
+float Vector2D::length() const {
+    return (float)std::sqrt(x * x + y * y);
+}
+
+Vector2D& Vector2D::Lerp(const Vector2D& vec1, 
+	const Vector2D& vec2, float amount)
+{
+    Vector2D temp;
+
+	if (amount > 1)
+        amount = 1;
+    if (amount < 0)
+        amount = 0;
+
+	temp.x = vec1.x + (vec2.x - vec1.x) * amount;
+    temp.y = vec1.y + (vec2.y - vec1.y) * amount;
+
+	return temp;
 }

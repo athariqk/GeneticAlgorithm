@@ -147,7 +147,7 @@ public:
 		groupedEntities[mGroup].emplace_back(mEntity);
 	}
 
-	std::vector<Entity*>& getGroup(Group mGroup)
+	std::vector<Entity*>& GetGroup(Group mGroup)
 	{
 		return groupedEntities[mGroup];
 	}

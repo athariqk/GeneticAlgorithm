@@ -25,7 +25,7 @@ public:
 
 	// Spawn given amount of food to be randomly
 	// scattered around the environment
-	void spawnFood(int amount);
+	void spawnNutrients(int amount);
 
 	Species* getSpecies(uint64_t index);
 
