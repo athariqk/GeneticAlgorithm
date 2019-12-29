@@ -12,6 +12,8 @@ public:
 	int width = 32;
 	float scale = 1;
 
+	int speed = 3;
+
 	TransformComponent() {
 		position.Zero();
 	}
@@ -36,5 +38,16 @@ public:
 		height = h;
 		scale = sc;
 	}
+
+	void OnInit() override
+    {
+        velocity.Zero();
+    }
+
+	void OnUpdate() override
+    {
+        position.x += static_cast<int>(velocity.x * speed);
+        position.y += static_cast<int>(velocity.y * speed);
+    }
 
 };

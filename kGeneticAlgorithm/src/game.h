@@ -33,6 +33,11 @@ public:
 
 	static EntityManager* GetEntityManager();
 
+	enum groupLabels : std::size_t {
+        Nutrients,
+		Other
+    };
+
 private:
 	bool m_running = false;
 

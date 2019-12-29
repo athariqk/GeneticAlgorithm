@@ -63,9 +63,11 @@ void Game::Init(const char* title, int width, int height, bool fullscreen) {
 		m_running = true;
 
 		// Create the key controller
-		auto& keyEvent(GetEntityManager()->AddEntity());
-		keyEvent.AddComponent<KeyEvent>();
+		auto& controller(GetEntityManager()->AddEntity());
+        controller.AddComponent<KeyEvent>();
 
+		// Spawn nutrients around the environment
+		env.spawnNutrients(20);
 		// Initialize first species
 		auto& primum(GetEntityManager()->AddEntity());
 		primum.AddComponent<Species>("Primum", "Primus", "Specius");
@@ -74,8 +76,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen) {
         primum.AddComponent<OrganismComponent>();
         primum.AddComponent<OrganismComponent>();
         primum.AddComponent<OrganismComponent>();
-		//env.addSpeciesToEnvironment(&primum, 10, true);
-		env.spawnNutrients(20);
+		//env.addSpeciesToEnvironment(&primum, 10, true)
 
 	} else {
 		m_running = false;

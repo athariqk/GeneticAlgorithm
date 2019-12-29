@@ -5,11 +5,11 @@
 #include "Entities/Components.h"
 
 void Environment::spawnNutrients(int amount) {
-    auto& nutrient(Game::GetEntityManager()->AddEntity());
-	for (int i = 0; i < amount; i++) {
+    for (int i = 0; i < amount; i++) {
+        auto& nutrient(Game::GetEntityManager()->AddEntity());
         nutrient.AddComponent<Nutrient>(10);
-	}
-    nutrient.AddGroup(2);
+		nutrient.AddGroup(Game::groupLabels::Nutrients);
+    }
 }
 
 Species* Environment::getSpecies(uint64_t index) {

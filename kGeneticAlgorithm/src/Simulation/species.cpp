@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-Species::Species(const std::string& name,
-	const std::string& genus, const std::string& epithet) :
+Species::Species(const std::string& name, const std::string& genus,
+	const std::string& epithet) :
 	name(name),
 	genus(genus),
 	epithet(epithet)
@@ -12,12 +12,14 @@ Species::Species(const std::string& name,
 
 Species::~Species() {}
 
+/*
 bool Species::addOrganism(OrganismComponent* organism) {
 	auto& m_org(Game::GetEntityManager()->AddEntity());
 	m_org.AddComponent<OrganismComponent>(organism);
 	m_org.AddGroup(1);
 	return true;
 }
+*/
 
 /*
 void Species::setPopulation(int32_t population)

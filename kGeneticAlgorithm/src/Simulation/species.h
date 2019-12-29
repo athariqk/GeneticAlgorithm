@@ -1,7 +1,6 @@
 #pragma once
 #include "population.h"
 #include "genes.h"
-#include "organism.h"
 
 #include "Entities/Components.h"
 
@@ -9,7 +8,7 @@
 #include <string>
 #include <vector>
 
-class Species : Component
+class Species : public Component
 {
 public:
 	Species() = default;
@@ -21,21 +20,19 @@ public:
 
 	//void setPopulation(int32_t population);
 
-	bool addOrganism(OrganismComponent* organism);
+	//bool addOrganism(OrganismComponent* organism);
 
-	bool removeOrganism(OrganismComponent* organism);
+	//bool removeOrganism(OrganismComponent* organism);
 
-	bool reproduce(uint64_t generation, Population* population,
-		std::vector<Species*> sortedSpecies);
+	//bool reproduce(uint64_t generation, Population* population,
+	//	std::vector<Species*> sortedSpecies);
 
-	bool sortFitness();
+	//bool sortFitness();
 
 	int age;
 	double averageFitness;
 	double maxFitness;
 	double maxFitnessEver;
-
-	std::vector<OrganismComponent*> organisms;
 
 	std::string getFormattedName(bool identifier);
 
