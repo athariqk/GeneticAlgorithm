@@ -9,6 +9,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include <glad/glad.h>
+
 class OrganismComponent;
 
 class Game
