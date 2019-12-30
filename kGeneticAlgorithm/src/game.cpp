@@ -53,27 +53,13 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
         SDL_GL_CONTEXT_PROFILE_MASK,
         SDL_GL_CONTEXT_PROFILE_CORE);
 
-    std::string glsl_version = "";
-#ifdef __APPLE__
-    // GL 3.2 Core + GLSL 150
-    glsl_version = "#version 150";
-    SDL_GL_SetAttribute( // required on Mac OS
-        SDL_GL_CONTEXT_FLAGS,
-        SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#elif __linux__
-    // GL 3.2 Core + GLSL 150
-    glsl_version = "#version 150";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-#elif _WIN32
+    const char* glsl_version = "";
+#ifdef _WIN32
     // GL 3.0 + GLSL 130
-    glsl_version = "#version 450";
+    glsl_version = "#version 110";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
 
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
@@ -82,7 +68,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
         _SDLWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_OPENGL);
 
-        _SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, 0);
+        _SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_ACCELERATED);
 
         if (_SDLWindow) {
             LOG_INFO("[Game] SDL Window created, resolution: {} x {}", width, height);
@@ -100,7 +86,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 	SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
     SDL_Window* window = _SDLWindow;
-    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+    gl_context = SDL_GL_CreateContext(window);
 
 	// Enable vsync
     SDL_GL_SetSwapInterval(1); 
@@ -110,6 +96,19 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
     } else {
         LOG_INFO("Glad initialized");
     }
+
+	// Setup Dear ImGui binding
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
+    // Setup style
+    ImGui::StyleColorsClassic();
 
     m_running = true;
 
@@ -134,6 +133,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 void Game::HandleEvents()
 {
     SDL_PollEvent(&m_event);
+    ImGui_ImplSDL2_ProcessEvent(&m_event);
 
     switch (m_event.type) {
     case SDL_QUIT:
@@ -152,15 +152,39 @@ void Game::Update()
 
 void Game::Render()
 {
+    SDL_SetRenderDrawColor(_SDLRenderer, clear_color.x * 255, clear_color.y * 255, clear_color.z * 255, clear_color.w * 255);
     SDL_RenderClear(_SDLRenderer);
-    GetEntityManager()->Draw();
-    SDL_SetRenderDrawColor(_SDLRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(_SDLRenderer, 0xEE, 0xEE, 0xEE, 0xFF);
+
+	GetEntityManager()->Draw();
+
+	// Start the Dear ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(_SDLWindow);
+    ImGui::NewFrame();
+
+    if (show_demo_window)
+        ImGui::ShowDemoWindow(&show_demo_window);
+
+    // Rendering
+    ImGui::Render();
+    //SDL_GL_MakeCurrent(window, gl_context); !!!This line must be commented
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    //glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w); !!!This line must be commented
+    //glClear(GL_COLOR_BUFFER_BIT); !!!This line must be commented
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    SDL_GL_SwapWindow(_SDLWindow);
     SDL_RenderPresent(_SDLRenderer);
 }
 
 void Game::Clean()
 {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
+    SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(_SDLWindow);
-    SDL_DestroyRenderer(_SDLRenderer);
     SDL_Quit();
 }

@@ -10,42 +10,51 @@
 #include <SDL_image.h>
 
 #include <glad/glad.h>
+#include <imgui.h>
+
+#include "OpenGL/ImGuiOpenGLRenderer.h"
+#include "OpenGL/ImGuiSDL.h"
 
 class OrganismComponent;
 
-class Game
-{
+class Game {
 public:
-	Game();
-	~Game();
+    Game();
+    ~Game();
 
-	void Init(const char* title, int width, int height, bool fullscreen);
-	void HandleEvents();
-	void Update();
-	void Render();
-	void Clean();
+    void Init(const char* title, int width, int height, bool fullscreen);
+    void HandleEvents();
+    void Update();
+    void Render();
+    void Clean();
 
-	bool running() { return m_running; }
+    bool running() { return m_running; }
 
-	static Game* Get();
+    static Game* Get();
 
-	static SDL_Renderer* _SDLRenderer;
+    static SDL_Renderer* _SDLRenderer;
 
-	static SDL_Event m_event;
+    static SDL_Event m_event;
 
-	static EntityManager* GetEntityManager();
+    static EntityManager* GetEntityManager();
 
-	enum groupLabels : std::size_t {
+    enum groupLabels : std::size_t {
         Nutrients,
-		Other
+        Other
     };
 
 private:
-	bool m_running = false;
+    bool m_running = false;
 
-	static EntityManager* emInstance;
+	bool show_demo_window = true;
 
-	SDL_Window* _SDLWindow;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	static Game* staticInstance;
+	SDL_GLContext gl_context;
+
+    static EntityManager* emInstance;
+
+    SDL_Window* _SDLWindow;
+
+    static Game* staticInstance;
 };
