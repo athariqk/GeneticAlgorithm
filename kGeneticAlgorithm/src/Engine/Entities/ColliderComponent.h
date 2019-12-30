@@ -31,5 +31,4 @@ public:
 		collider.w = transform->width * transform->scale;
 		collider.h = transform->height * transform->scale;
 	}
-
 };

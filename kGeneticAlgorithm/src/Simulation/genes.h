@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <stdint.h>
 
 class Genes {
 public:
