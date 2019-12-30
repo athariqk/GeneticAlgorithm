@@ -44,38 +44,29 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
         flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
 
-	// set OpenGL attributes
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-    SDL_GL_SetAttribute(
-        SDL_GL_CONTEXT_PROFILE_MASK,
-        SDL_GL_CONTEXT_PROFILE_CORE);
-
-    const char* glsl_version = "";
-#ifdef _WIN32
-    // GL 3.0 + GLSL 130
-    glsl_version = "#version 110";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
 
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
         LOG_INFO("[Game] SDL Subsystems initialized");
 
         _SDLWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_OPENGL);
+            SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_OPENGL
+			| SDL_WINDOW_ALLOW_HIGHDPI);
 
-        _SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_ACCELERATED);
+        _SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_SOFTWARE);
+
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 
         if (_SDLWindow) {
             LOG_INFO("[Game] SDL Window created, resolution: {} x {}", width, height);
         }
         if (_SDLRenderer) {
             LOG_INFO("[Game] SDL Renderer created");
-            SDL_SetRenderDrawColor(_SDLRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         }
     } else {
         m_running = false;
@@ -85,8 +76,8 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 
 	SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    SDL_Window* window = _SDLWindow;
-    gl_context = SDL_GL_CreateContext(window);
+
+    gl_context = SDL_GL_CreateContext(_SDLWindow);
 
 	// Enable vsync
     SDL_GL_SetSwapInterval(1); 
@@ -97,18 +88,24 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
         LOG_INFO("Glad initialized");
     }
 
-	// Setup Dear ImGui binding
+    // Setup Dear ImGui binding
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
-    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui_ImplSDL2_InitForOpenGL(_SDLWindow, gl_context);
+    ImGui_ImplOpenGL3_Init("#version 460");
 
     // Setup style
     ImGui::StyleColorsClassic();
+
+	// Report OpenGL info
+	LOG_INFO("OpenGL version: {}", glGetString(GL_VERSION));
+	LOG_INFO("GLSL version: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	LOG_INFO("Vendor: {}", glGetString(GL_VENDOR));
+	LOG_INFO("Renderer: {}", glGetString(GL_RENDERER));
 
     m_running = true;
 
@@ -123,7 +120,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
     auto& primum(GetEntityManager()->AddEntity());
     primum.AddComponent<Species>("Primum", "Primus", "Specius");
 
-    // Spawns 10 organisms
+    // Spawn 10 organisms
     for (int i = 0; i < 10; i++) {
         primum.AddComponent<OrganismComponent>();
     }
@@ -133,14 +130,15 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 void Game::HandleEvents()
 {
     SDL_PollEvent(&m_event);
-    ImGui_ImplSDL2_ProcessEvent(&m_event);
 
     switch (m_event.type) {
-    case SDL_QUIT:
-        m_running = false;
-        break;
-    default:
-        break;
+        ImGui_ImplSDL2_ProcessEvent(&m_event);
+
+		case SDL_QUIT:
+			m_running = false;
+			break;
+		default:
+			break;
     }
 }
 
@@ -156,7 +154,7 @@ void Game::Render()
     SDL_RenderClear(_SDLRenderer);
     SDL_SetRenderDrawColor(_SDLRenderer, 0xEE, 0xEE, 0xEE, 0xFF);
 
-	GetEntityManager()->Draw();
+	//GetEntityManager()->Draw();
 
 	// Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -165,17 +163,35 @@ void Game::Render()
 
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
+    {
+        static float f = 0.0f;
+        static int counter = 0;
 
-    // Rendering
+        ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+
+        ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
+        ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
+
+        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+        if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
+            counter++;
+        ImGui::SameLine();
+        ImGui::Text("counter = %d", counter);
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
+    }
+
     ImGui::Render();
-    //SDL_GL_MakeCurrent(window, gl_context); !!!This line must be commented
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    //glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w); !!!This line must be commented
-    //glClear(GL_COLOR_BUFFER_BIT); !!!This line must be commented
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+    ImGuiIO& io = ImGui::GetIO();
+    glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(_SDLWindow);
-    SDL_RenderPresent(_SDLRenderer);
 }
 
 void Game::Clean()

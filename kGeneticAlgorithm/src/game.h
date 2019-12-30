@@ -50,11 +50,11 @@ private:
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	SDL_GLContext gl_context;
-
     static EntityManager* emInstance;
 
     SDL_Window* _SDLWindow;
+
+	SDL_GLContext gl_context;
 
     static Game* staticInstance;
 };

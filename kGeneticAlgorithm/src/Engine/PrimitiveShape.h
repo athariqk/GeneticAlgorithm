@@ -13,7 +13,6 @@ public:
 	//! \with minor changes
 	void DrawCircle(int32_t centreX, int32_t centreY, int32_t radius)
 	{
-		SDL_SetRenderDrawColor(Game::_SDLRenderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 		const int32_t diameter = (radius * 2);
 
 		int32_t x = (radius - 1);
