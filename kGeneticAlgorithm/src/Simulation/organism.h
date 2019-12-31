@@ -56,10 +56,6 @@ public:
         // Linear interpolation from current position -> nutrient position
         transform->position = transform->position.Lerp(transform->position,
             nutrients.at(index)->GetComponent<TransformComponent>().position, 0.01f);
-
-        if (Collision::AABB(collider->collider, nutrients.at(index)->GetComponent<ColliderComponent>().collider)) {
-            LOG_INFO("Hit nutrient collider");
-        }
     }
 
     std::string getSpeciesName()

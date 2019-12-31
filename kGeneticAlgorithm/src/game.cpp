@@ -55,7 +55,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
             SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_OPENGL
 			| SDL_WINDOW_ALLOW_HIGHDPI);
 
-        _SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_SOFTWARE);
+        //_SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_SOFTWARE);
 
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
@@ -150,9 +150,9 @@ void Game::Update()
 
 void Game::Render()
 {
-    SDL_SetRenderDrawColor(_SDLRenderer, clear_color.x * 255, clear_color.y * 255, clear_color.z * 255, clear_color.w * 255);
-    SDL_RenderClear(_SDLRenderer);
-    SDL_SetRenderDrawColor(_SDLRenderer, 0xEE, 0xEE, 0xEE, 0xFF);
+    //SDL_SetRenderDrawColor(_SDLRenderer, clear_color.x * 255, clear_color.y * 255, clear_color.z * 255, clear_color.w * 255);
+    //SDL_RenderClear(_SDLRenderer);
+    //SDL_SetRenderDrawColor(_SDLRenderer, 0xEE, 0xEE, 0xEE, 0xFF);
 
 	//GetEntityManager()->Draw();
 

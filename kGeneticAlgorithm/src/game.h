@@ -12,8 +12,8 @@
 #include <glad/glad.h>
 #include <imgui.h>
 
-#include "OpenGL/ImGuiOpenGLRenderer.h"
-#include "OpenGL/ImGuiSDL.h"
+#include "Platform/OpenGL/ImGuiOpenGLRenderer.h"
+#include "Platform/OpenGL/ImGuiSDL.h"
 
 class OrganismComponent;
 
