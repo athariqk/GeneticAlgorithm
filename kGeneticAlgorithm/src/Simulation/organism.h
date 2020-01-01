@@ -17,9 +17,11 @@ public:
     OrganismComponent() : usePrimitiveShape(true) {}
     // The organism would later be created somewhere in
     // the evolution algorithm
-    OrganismComponent(double m_fitness, Genes* gene) : fitness(m_fitness), genome(gene), usePrimitiveShape(true) {}
+    OrganismComponent(double m_fitness, Genes* gene)
+		: fitness(m_fitness), genome(gene), usePrimitiveShape(true) {}
 
-    OrganismComponent(const OrganismComponent& organism) : species(organism.species), usePrimitiveShape(true) {}
+    OrganismComponent(const OrganismComponent& organism)
+		: species(organism.species), usePrimitiveShape(true) {}
 
     //OrganismComponent(Species species, const char* texturePath) :
     //	species(&species), texture(texturePath)

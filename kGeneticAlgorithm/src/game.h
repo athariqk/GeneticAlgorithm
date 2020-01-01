@@ -10,10 +10,6 @@
 #include <SDL_image.h>
 
 #include <glad/glad.h>
-#include <imgui.h>
-
-#include "Platform/OpenGL/ImGuiOpenGLRenderer.h"
-#include "Platform/OpenGL/ImGuiSDL.h"
 
 class OrganismComponent;
 
@@ -31,12 +27,12 @@ public:
     bool running() { return m_running; }
 
     static Game* Get();
+    static EntityManager* GetEntityManager();
+    static SDL_GLContext* GetContext();
 
     static SDL_Renderer* _SDLRenderer;
-
+	static SDL_Window* _SDLWindow;
     static SDL_Event m_event;
-
-    static EntityManager* GetEntityManager();
 
     enum groupLabels : std::size_t {
         Nutrients,
@@ -46,15 +42,9 @@ public:
 private:
     bool m_running = false;
 
-	bool show_demo_window = true;
-
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
     static EntityManager* emInstance;
 
-    SDL_Window* _SDLWindow;
-
-	SDL_GLContext gl_context;
+	static SDL_GLContext gl_context;
 
     static Game* staticInstance;
 };

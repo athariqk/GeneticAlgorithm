@@ -43,6 +43,7 @@ public:
     virtual void OnInit() {}
     virtual void OnUpdate() {}
     virtual void OnDraw() {}
+    virtual void OnEvent() {}
     virtual void OnClear() {}
 
     virtual ~Component() {}
@@ -62,6 +63,18 @@ public:
     {
         for (auto& c : components)
             c->OnDraw();
+    }
+
+    void OnEvent()
+    {
+        for (auto& c : components)
+            c->OnEvent();
+    }
+
+    void OnClear()
+    {
+        for (auto& c : components)
+            c->OnClear();
     }
 
     bool isEnabled() const { return enabled; }
@@ -129,6 +142,17 @@ public:
         for (auto& e : entities)
             e->OnDraw();
     }
+
+    void Event()
+    {
+        for (auto& e : entities)
+            e->OnEvent();
+    }
+
+	void Clear() {
+        for (auto& e : entities)
+            e->OnClear();
+	}
 
     void Refresh()
     {
