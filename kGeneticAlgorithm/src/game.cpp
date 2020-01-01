@@ -8,8 +8,8 @@
 #include "Vector2D.h"
 #include "Entities/Components.h"
 
-Environment env;
-EntityManager* entityManager = new EntityManager();
+Environment		env;
+EntityManager*	entityManager = new EntityManager();
 
 Game::Game()
 {
@@ -23,12 +23,12 @@ Game::~Game()
 }
 
 // ------------------------------------- //
-EntityManager* Game::emInstance = nullptr;
-Game* Game::staticInstance = nullptr;
-SDL_Renderer* Game::_SDLRenderer = nullptr;
-SDL_Window* Game::_SDLWindow = nullptr;
-SDL_GLContext Game::gl_context = nullptr;
-SDL_Event Game::m_event;
+EntityManager*	Game::emInstance		= nullptr;
+Game*			Game::staticInstance	= nullptr;
+SDL_Renderer*	Game::_SDLRenderer		= nullptr;
+SDL_Window*		Game::_SDLWindow		= nullptr;
+SDL_GLContext	Game::gl_context		= nullptr;
+SDL_Event		Game::m_event;
 // ------------------------------------- //
 
 Game* Game::Get()
@@ -57,7 +57,8 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
         LOG_INFO("[Game] SDL Subsystems initialized");
 
         _SDLWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED, width, height, flags | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
+            SDL_WINDOWPOS_CENTERED, width, height, flags | 
+			SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
 
         //_SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_SOFTWARE);
 

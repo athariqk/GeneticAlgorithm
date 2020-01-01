@@ -1,4 +1,5 @@
 #include "ImGui/ImGuiLayer.h"
+#include "Logger.h"
 
 #include <glad/glad.h>
 
@@ -54,7 +55,7 @@ void ImGuiLayer::End()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void ImGuiLayer::OnClear() {
+void ImGuiLayer::Clear() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
