@@ -22,7 +22,7 @@ IncludeDir["ImGui"] = "kGeneticAlgorithm/ThirdParty/imgui"
 IncludeDir["SDL2"] = "kGeneticAlgorithm/ThirdParty/SDL2/include"
 IncludeDir["SDL2_image"] = "kGeneticAlgorithm/ThirdParty/SDL2_image/include"
 IncludeDir["GLAD"] = "kGeneticAlgorithm/ThirdParty/glad/include"
-IncludeDir["SDL-gpu"] = "kGeneticAlgorithm/ThirdParty/SDL_gpu/include"
+IncludeDir["SDL_gpu"] = "kGeneticAlgorithm/ThirdParty/SDL_gpu/include"
 
 group "Dependencies"
 	include "kGeneticAlgorithm/ThirdParty/imgui"
@@ -60,7 +60,7 @@ project "kGeneticAlgorithm"
         "%{IncludeDir.SDL2}",
         "%{IncludeDir.SDL2_image}",
 		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.SDL-gpu}"
+		"%{IncludeDir.SDL_gpu}"
 	}
 
 	libdirs
