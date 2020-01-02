@@ -67,7 +67,7 @@ project "kGeneticAlgorithm"
 	{
 		"%{prj.name}/ThirdParty/SDL2/lib/x64/",
 		"%{prj.name}/ThirdParty/SDL2_image/lib/x64/",
-		"%{prj.name}/ThirdParty/SDL2_gpu/lib/Release/"
+		"%{prj.name}/ThirdParty/SDL_gpu/lib/Release"
 	}
 
 	links 
