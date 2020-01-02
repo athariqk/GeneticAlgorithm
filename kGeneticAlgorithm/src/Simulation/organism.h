@@ -61,9 +61,19 @@ public:
 
     void OnUpdate() override
     {
-        // Linear interpolation from initial position -> nutrient position
-        transform->position = transform->position.Lerp(transform->position,
-            nutrients.at(index)->GetComponent<TransformComponent>().position, 0.01f);
+		if (nutrients.at(index)->isEnabled()) {
+			if (Collision::AABB(collider->collider, nutrients.at(index)
+				->GetComponent<ColliderComponent>().collider))
+			{
+				LOG_INFO("{} has hit collider {}", collider->tag,
+					nutrients.at(index)->GetComponent<ColliderComponent>().tag);
+			}
+			else {
+				// Linearly interpolate from initial position -> nutrient position
+				transform->position = transform->position.Lerp(transform->position,
+					nutrients.at(index)->GetComponent<TransformComponent>().position, 0.01f);
+			}
+		}
     }
 
     std::string getSpeciesName()

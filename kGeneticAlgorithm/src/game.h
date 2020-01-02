@@ -39,6 +39,7 @@ public:
     static SDL_Window* _SDLWindow;
     static GPU_Target* screen;
     static SDL_Event m_event;
+	static GPU_Rect camera;
 
     enum groupLabels : std::size_t {
         Nutrients,

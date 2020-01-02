@@ -5,6 +5,12 @@
 
 GPU_Image* TextureManager::LoadTexture(const char* texture) {
     GPU_Image* image = GPU_LoadImage(texture);
+
+	if (image == nullptr) {
+		LOG_ERROR("Could not load texture file {}!", texture);
+		return nullptr;
+	}
+
 	return image;
 }
 

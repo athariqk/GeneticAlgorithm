@@ -19,6 +19,7 @@ SDL_Renderer*	Game::_SDLRenderer		= nullptr;
 SDL_Window*		Game::_SDLWindow		= nullptr;
 SDL_GLContext	Game::gl_context		= nullptr;
 GPU_Target*		Game::screen			= nullptr;
+GPU_Rect		Game::camera			= { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 SDL_Event		Game::m_event;
 // ----------------------------------------------- //
 
@@ -144,6 +145,15 @@ void Game::Update()
 {
     GetEntityManager()->Refresh();
     GetEntityManager()->Update();
+
+	for (auto& entities : GetEntityManager()
+		->GetEntities())
+	{
+		if (entities->hasComponent<TransformComponent>()) {
+			entities->GetComponent<TransformComponent>().position.x -= Game::camera.x;
+			entities->GetComponent<TransformComponent>().position.y -= Game::camera.y;
+		}
+	}
 }
 
 void Game::Render()

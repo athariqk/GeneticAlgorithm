@@ -15,17 +15,14 @@ ImGuiLayer::ImGuiLayer(SDL_Window* window, SDL_GLContext* context)
         return;
 	}
 
-    // Setup Dear ImGui binding
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
     ImGui_ImplSDL2_InitForOpenGL(window, context);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    // Setup style
     ImGui::StyleColorsClassic();
 
 	LOG_INFO("ImGui Initialized");
@@ -40,7 +37,6 @@ void ImGuiLayer::OnEvent(SDL_Event& event)
 
 void ImGuiLayer::Begin(SDL_Window* window)
 {
-    // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
     ImGui::NewFrame();
