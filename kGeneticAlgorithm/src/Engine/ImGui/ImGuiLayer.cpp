@@ -33,7 +33,7 @@ ImGuiLayer::ImGuiLayer(SDL_Window* window, SDL_GLContext* context)
 
 ImGuiLayer::~ImGuiLayer() {}
 
-void ImGuiLayer::OnEvent(SDL_Event event)
+void ImGuiLayer::OnEvent(SDL_Event& event)
 {
     ImGui_ImplSDL2_ProcessEvent(&event);
 }
@@ -49,9 +49,6 @@ void ImGuiLayer::Begin(SDL_Window* window)
 void ImGuiLayer::End()
 {
     ImGui::Render();
-    ImGuiIO& io = ImGui::GetIO();
-    glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 

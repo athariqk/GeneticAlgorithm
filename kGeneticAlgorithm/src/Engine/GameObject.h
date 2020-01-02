@@ -16,7 +16,7 @@ private:
 	int xPos;
 	int yPos;
 
-	SDL_Texture* objtexture;
-	SDL_Rect srcRect, destRect;
+	GPU_Image* objtexture;
+	GPU_Rect srcRect, destRect;
 
 };

@@ -14,7 +14,7 @@ public:
 	}
 
 	~SpriteComponent() {
-		SDL_DestroyTexture(texture);
+		GPU_FreeImage(texture);
 	}
 
 	void OnInit() override {
@@ -28,16 +28,16 @@ public:
 	void OnUpdate() override {
 		destRect.x = static_cast<int>(transform->position.x);
 		destRect.y = static_cast<int>(transform->position.y);
-		destRect.w = transform->width * transform->scale;
-		destRect.h = transform->height * transform->scale;
+		destRect.w = transform->width * transform->scale / 5;
+		destRect.h = transform->height * transform->scale / 5;
 	}
 
 	void OnDraw() override {
-		TextureManager::Draw(texture, srcRect, destRect);
+        TextureManager::Draw(texture, &srcRect, &destRect);
 	}
 
 private:
 	TransformComponent* transform;
-	SDL_Texture* texture;
-	SDL_Rect srcRect, destRect;
+	GPU_Image* texture;
+	GPU_Rect srcRect, destRect;
 };

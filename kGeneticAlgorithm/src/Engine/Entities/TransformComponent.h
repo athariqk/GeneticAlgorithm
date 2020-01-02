@@ -30,6 +30,14 @@ public:
 		position.y = y;
 	}
 
+	//! \brief Construct with x, y, and scale parameter
+	TransformComponent(float x, float y, float sc)
+    {
+        position.x = x;
+        position.y = y;
+        scale = sc;
+    }
+
 	//! \brief  Construct with all transform elements parameter
 	TransformComponent(float x, float y, int w, int h, float sc) {
 		position.x = x;

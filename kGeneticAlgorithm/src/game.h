@@ -8,6 +8,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_gpu.h>
 
 #include <glad/glad.h>
 
@@ -28,10 +29,15 @@ public:
 
     static Game* Get();
     static EntityManager* GetEntityManager();
-    static SDL_GLContext* GetContext();
+
+    static SDL_GLContext* GetContext()
+    {
+        return &gl_context;
+    }
 
     static SDL_Renderer* _SDLRenderer;
-	static SDL_Window* _SDLWindow;
+    static SDL_Window* _SDLWindow;
+    static GPU_Target* screen;
     static SDL_Event m_event;
 
     enum groupLabels : std::size_t {
@@ -43,8 +49,6 @@ private:
     bool m_running = false;
 
     static EntityManager* emInstance;
-
-	static SDL_GLContext gl_context;
-
+    static SDL_GLContext gl_context;
     static Game* staticInstance;
 };

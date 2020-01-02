@@ -3,12 +3,15 @@
 
 #include "ImGui/ImGuiLayer.h"
 
-class GameGUI : public Component {
+class GameGUI {
 public:
-    void OnInit() override;
-    void OnEvent() override;
-    void OnDraw() override;
-	void OnClear() override;
+    GameGUI() {}
+    ~GameGUI() = default;
+
+    void OnInit();
+    void OnImGuiRender();
+    void OnImGuiEvent();
+    void OnImGuiClear();
 
 private:
     ImGuiLayer* imgui;

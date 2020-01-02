@@ -3,26 +3,12 @@
 #include "TextureManager.h"
 #include "Logger.h"
 
-SDL_Texture* TextureManager::LoadTexture(const char* texture) {
-	if (Game::_SDLRenderer == nullptr) {
-		LOG_ERROR("[TextureManager] Renderer is not initialized!");
-		return nullptr;
-	}
-
-	SDL_Surface* tempSurface = IMG_Load(texture);
-	SDL_Texture* tex = SDL_CreateTextureFromSurface(Game::_SDLRenderer, tempSurface);
-	SDL_FreeSurface(tempSurface);
-
-	if (tex == nullptr) {
-		LOG_ERROR("[TextureManager] Could not load texture file {}! {}", texture);
-		return NULL;
-	}
-	LOG_TRACE("[TextureManager] Loaded texture file {}", texture);
-
-	return tex;
+GPU_Image* TextureManager::LoadTexture(const char* texture) {
+    GPU_Image* image = GPU_LoadImage(texture);
+	return image;
 }
 
-void TextureManager::Draw(SDL_Texture * tex, SDL_Rect src, SDL_Rect dest)
+void TextureManager::Draw(GPU_Image* tex, GPU_Rect* src, GPU_Rect* dest)
 {
-	SDL_RenderCopy(Game::_SDLRenderer, tex, &src, &dest);
+    GPU_BlitScale(tex, src, Game::screen, dest->x, dest->y, dest->w, dest->h);
 }

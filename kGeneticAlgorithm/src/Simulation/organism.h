@@ -10,18 +10,20 @@
 #include <vector>
 #include <ctime>
 
+#include <SDL_gpu.h>
+
 class Species;
 
 class OrganismComponent : public Component {
 public:
+	// Temporary
     OrganismComponent() : usePrimitiveShape(true) {}
-    // The organism would later be created somewhere in
-    // the evolution algorithm
+
     OrganismComponent(double m_fitness, Genes* gene)
-		: fitness(m_fitness), genome(gene), usePrimitiveShape(true) {}
+        : fitness(m_fitness), genome(gene), usePrimitiveShape(true) {}
 
     OrganismComponent(const OrganismComponent& organism)
-		: species(organism.species), usePrimitiveShape(true) {}
+        : species(organism.species), usePrimitiveShape(true) {}
 
     //OrganismComponent(Species species, const char* texturePath) :
     //	species(&species), texture(texturePath)
@@ -38,8 +40,11 @@ public:
     void OnInit() override
     {
         index = std::rand() % 20 + 0;
-        transform = &entity->AddComponent<TransformComponent>();
+        transform = &entity->AddComponent<TransformComponent>
+			(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10, 10);
+
         collider = &entity->AddComponent<ColliderComponent>("organism");
+
         if (!usePrimitiveShape)
             sprite = &entity->AddComponent<SpriteComponent>(texture);
 
@@ -49,13 +54,14 @@ public:
     void OnDraw() override
     {
         if (usePrimitiveShape) {
-            shape.DrawCircle(transform->position.x, transform->position.y, 10);
+            PrimitiveShape::DrawCircle(transform->position.x,
+				transform->position.y, transform->scale);
         }
     }
 
     void OnUpdate() override
     {
-        // Linear interpolation from current position -> nutrient position
+        // Linear interpolation from initial position -> nutrient position
         transform->position = transform->position.Lerp(transform->position,
             nutrients.at(index)->GetComponent<TransformComponent>().position, 0.01f);
     }
@@ -68,10 +74,10 @@ public:
 private:
     std::vector<Entity*> nutrients;
 
-    ColliderComponent* collider;
+	ColliderComponent* collider;
     TransformComponent* transform;
     SpriteComponent* sprite;
-    PrimitiveShape shape;
+    //PrimitiveShape shape;
     const char* texture;
 
     int index;

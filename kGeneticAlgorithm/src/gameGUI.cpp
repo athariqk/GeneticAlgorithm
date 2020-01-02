@@ -2,17 +2,16 @@
 
 #include "game.h"
 
-void GameGUI::OnInit()
-{
+void GameGUI::OnInit(){
     imgui = new ImGuiLayer(Game::Get()->_SDLWindow, Game::GetContext());
 }
 
-void GameGUI::OnEvent()
+void GameGUI::OnImGuiEvent()
 {
     imgui->OnEvent(Game::Get()->m_event);
 }
 
-void GameGUI::OnDraw()
+void GameGUI::OnImGuiRender()
 {
     imgui->Begin(Game::Get()->_SDLWindow);
 
@@ -41,6 +40,6 @@ void GameGUI::OnDraw()
     imgui->End();
 }
 
-void GameGUI::OnClear() {
+void GameGUI::OnImGuiClear() {
     imgui->Clear();
 }

@@ -2,11 +2,11 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_gpu.h>
 
-class TextureManager
-{
+class TextureManager {
 public:
-	static SDL_Texture* LoadTexture(const char* texture);
+    static GPU_Image* LoadTexture(const char* texture);
 
-	static void Draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest);
+    static void Draw(GPU_Image* tex, GPU_Rect* src, GPU_Rect* dest);
 };

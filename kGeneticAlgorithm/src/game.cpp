@@ -8,8 +8,19 @@
 #include "Vector2D.h"
 #include "Entities/Components.h"
 
+// ------------ Declare tons of stuff ------------ //
 Environment		env;
-EntityManager*	entityManager = new EntityManager();
+EntityManager*	entityManager			= new EntityManager();
+GameGUI*		gui						= new GameGUI();
+// ----------------------------------------------- //
+EntityManager*	Game::emInstance		= nullptr;
+Game*			Game::staticInstance	= nullptr;
+SDL_Renderer*	Game::_SDLRenderer		= nullptr;
+SDL_Window*		Game::_SDLWindow		= nullptr;
+SDL_GLContext	Game::gl_context		= nullptr;
+GPU_Target*		Game::screen			= nullptr;
+SDL_Event		Game::m_event;
+// ----------------------------------------------- //
 
 Game::Game()
 {
@@ -21,15 +32,6 @@ Game::~Game()
 {
     staticInstance = nullptr;
 }
-
-// ------------------------------------- //
-EntityManager*	Game::emInstance		= nullptr;
-Game*			Game::staticInstance	= nullptr;
-SDL_Renderer*	Game::_SDLRenderer		= nullptr;
-SDL_Window*		Game::_SDLWindow		= nullptr;
-SDL_GLContext	Game::gl_context		= nullptr;
-SDL_Event		Game::m_event;
-// ------------------------------------- //
 
 Game* Game::Get()
 {
@@ -54,35 +56,36 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-        LOG_INFO("[Game] SDL Subsystems initialized");
+        LOG_INFO("SDL Subsystems initialized");
 
-        _SDLWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED, width, height, flags | 
-			SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
+        screen = GPU_Init(WINDOW_WIDTH, WINDOW_HEIGHT, GPU_DEFAULT_INIT_FLAGS);
 
-        //_SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_SOFTWARE);
+        _SDLWindow = SDL_GetWindowFromID(screen->context->windowID);
 
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+		//_SDLWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
+		//    SDL_WINDOWPOS_CENTERED, width, height, flags |
+		//	SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
+
+		//_SDLRenderer = SDL_CreateRenderer(_SDLWindow, -1, SDL_RENDERER_SOFTWARE);
+
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
         if (_SDLWindow) {
-            LOG_INFO("[Game] SDL Window created, resolution: {} x {}", width, height);
+            LOG_INFO("SDL Window created, resolution: {} x {}", width, height);
         }
         if (_SDLRenderer) {
-            LOG_INFO("[Game] SDL Renderer created");
+            LOG_INFO("SDL Renderer created");
         }
     } else {
         m_running = false;
-        LOG_ERROR("[Game] Failed to initialize SDL");
+        LOG_ERROR("Failed to initialize SDL");
         return;
     }
 
-    SDL_DisplayMode current;
-    SDL_GetCurrentDisplayMode(0, &current);
-
-    gl_context = SDL_GL_CreateContext(_SDLWindow);
+    gl_context = screen->context->context;
 
     // Enable vsync
     SDL_GL_SetSwapInterval(1);
@@ -93,8 +96,6 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
         LOG_INFO("Glad initialized");
     }
 
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-
     // Report OpenGL info
     LOG_INFO("OpenGL version: {}", glGetString(GL_VERSION));
     LOG_INFO("GLSL version: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
@@ -103,31 +104,24 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 
     m_running = true;
 
-	// Create GUI
-	auto& GUI(GetEntityManager()->AddEntity());
-    GUI.AddComponent<GameGUI>();
+	gui->OnInit();
 
     // Create the key input controller
     auto& controller(GetEntityManager()->AddEntity());
     controller.AddComponent<KeyEvent>();
 
     // Spawn nutrients around the environment
-    env.spawnNutrients(20);
+    env.spawnNutrients(30);
 
     // Initialize the first species
     auto& primum(GetEntityManager()->AddEntity());
     primum.AddComponent<Species>("Primum", "Primus", "Specius");
 
     // Spawn 10 organisms
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 20; i++) {
         primum.AddComponent<OrganismComponent>();
     }
     //env.addSpeciesToEnvironment(&primum, 10, true)
-}
-
-SDL_GLContext* Game::GetContext()
-{
-    return &gl_context;
 }
 
 void Game::HandleEvents()
@@ -136,6 +130,7 @@ void Game::HandleEvents()
 
     switch (m_event.type) {
         GetEntityManager()->Event();
+        gui->OnImGuiEvent();
 
     case SDL_QUIT:
         m_running = false;
@@ -153,16 +148,23 @@ void Game::Update()
 
 void Game::Render()
 {
-    glClearColor(0, 0, 0, 0);
+    GPU_ClearRGBA(screen, 0, 0, 0, 255);
+
     GetEntityManager()->Draw();
-    SDL_GL_SwapWindow(_SDLWindow);
+
+    GPU_FlushBlitBuffer();
+
+    gui->OnImGuiRender();
+
+    SDL_GL_MakeCurrent(_SDLWindow, gl_context);
+    GPU_Flip(screen);
 }
 
 void Game::Clean()
 {
+    gui->OnImGuiClear();
     GetEntityManager()->Clear();
 
-    SDL_GL_DeleteContext(gl_context);
-    SDL_DestroyWindow(_SDLWindow);
+    GPU_Quit();
     SDL_Quit();
 }

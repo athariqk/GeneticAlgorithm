@@ -22,6 +22,7 @@ IncludeDir["ImGui"] = "kGeneticAlgorithm/ThirdParty/imgui"
 IncludeDir["SDL2"] = "kGeneticAlgorithm/ThirdParty/SDL2/include"
 IncludeDir["SDL2_image"] = "kGeneticAlgorithm/ThirdParty/SDL2_image/include"
 IncludeDir["GLAD"] = "kGeneticAlgorithm/ThirdParty/glad/include"
+IncludeDir["SDL-gpu"] = "kGeneticAlgorithm/ThirdParty/SDL-gpu/include"
 
 group "Dependencies"
 	include "kGeneticAlgorithm/ThirdParty/imgui"
@@ -58,13 +59,15 @@ project "kGeneticAlgorithm"
 		"%{IncludeDir.ImGui}",
         "%{IncludeDir.SDL2}",
         "%{IncludeDir.SDL2_image}",
-		"%{IncludeDir.GLAD}"
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.SDL-gpu}"
 	}
 
 	libdirs
 	{
 		"%{prj.name}/ThirdParty/SDL2/lib/x64/",
-		"%{prj.name}/ThirdParty/SDL2_image/lib/x64/"
+		"%{prj.name}/ThirdParty/SDL2_image/lib/x64/",
+		"%{prj.name}/ThirdParty/SDL2-gpu/lib/Release/"
 	}
 
 	links 
@@ -74,7 +77,10 @@ project "kGeneticAlgorithm"
         "SDL2",
         "SDL2_image",
         "SDL2main",
-        "SDL2test"
+		"SDL2test",
+		"SDL2_gpu.lib",
+		"SDL2_gpu_s.lib",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"

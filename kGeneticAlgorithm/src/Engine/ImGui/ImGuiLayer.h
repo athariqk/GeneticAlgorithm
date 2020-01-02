@@ -8,11 +8,10 @@
 
 class ImGuiLayer {
 public:
-    //! \todo Maybe add OpenGL version option
     ImGuiLayer(SDL_Window* window, SDL_GLContext* context);
     ~ImGuiLayer();
 
-    void OnEvent(SDL_Event event);
+    void OnEvent(SDL_Event& event);
     void Begin(SDL_Window* window);
 	void End();
     void Clear();

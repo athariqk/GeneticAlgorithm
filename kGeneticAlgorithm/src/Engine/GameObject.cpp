@@ -30,5 +30,5 @@ void GameObject::Update() {
 }
 
 void GameObject::Render() {
-	SDL_RenderCopy(Game::_SDLRenderer, objtexture, &srcRect, &destRect);
+    GPU_Blit(objtexture, &srcRect, Game::screen, destRect.x, destRect.y);
 }
