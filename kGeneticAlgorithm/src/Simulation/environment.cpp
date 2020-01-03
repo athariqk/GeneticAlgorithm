@@ -4,31 +4,37 @@
 
 #include "Entities/Components.h"
 
+void Environment::addSpeciesToEnvironment(const std::string& name,
+	const std::string& genus, const std::string& epithet)
+{
+	auto& speciesInstance(Game::GetEntityManager()->AddEntity());
+	speciesInstance.AddComponent<Species>(name, genus, epithet);
+	speciesInstance.AddGroup(Game::groupLabels::SpeciesGroup);
+	LOG_INFO("Added species {} to the environment", name);
+}
+
+Species* Environment::getSpecies(const Species* species) {
+	auto& m_species(Game::GetEntityManager()->
+		GetGroup(Game::groupLabels::SpeciesGroup));
+
+	for (auto& i : m_species) {
+		if (&i->GetComponent<Species>() == species) {
+			return &i->GetComponent<Species>();
+		}
+	}
+}
+
+uint64_t Environment::getSpeciesCount() const {
+	auto& m_species(Game::GetEntityManager()->
+		GetGroup(Game::groupLabels::SpeciesGroup));
+
+	return m_species.size();
+}
+
 void Environment::spawnNutrients(int amount) {
     for (int i = 0; i < amount; i++) {
         auto& nutrient(Game::GetEntityManager()->AddEntity());
         nutrient.AddComponent<Nutrient>(10);
-		nutrient.AddGroup(Game::groupLabels::Nutrients);
+		nutrient.AddGroup(Game::groupLabels::NutrientsGroup);
     }
-}
-
-Species* Environment::getSpecies(uint64_t index) {
-	if (index >= speciesInEnvironment.size())
-		return nullptr;
-
-	return speciesInEnvironment[index].species;
-}
-
-int Environment::getSpeciesPopulation(const Species& species) {
-	for (auto& i : speciesInEnvironment) {
-		if (i.species == &species) {
-			return i.population;
-		}
-	}
-
-	return 0;
-}
-
-uint64_t Environment::getSpeciesCount() {
-	return speciesInEnvironment.size();
 }

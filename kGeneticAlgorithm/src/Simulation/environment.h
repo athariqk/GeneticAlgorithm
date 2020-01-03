@@ -1,23 +1,21 @@
 #pragma once
-#include "organism.h"
 #include "species.h"
 #include "config.h"
 
 #include <vector>
 
-//! \note This class is probably not needed.
-
 class Environment
 {
 public:
-	struct SpeciesInEnvironment {
-		Species* species;
-		int population = 0;
-	};
+	Environment() = default;
+	~Environment() {}
 
-	//! \note A species has to be created first!
-	//void addSpeciesToEnvironment(Species* species,
-	//	int population = INITIAL_SPECIES_POPULATION, bool spawnCells = false);
+	void addSpeciesToEnvironment(const std::string& name,
+		const std::string& genus, const std::string& epithet);
+
+	Species* getSpecies(const Species* species);
+
+	uint64_t getSpeciesCount() const;
 
 	// Spawn cell of a given species randomly
 	// around the environment
@@ -26,15 +24,5 @@ public:
 	// Spawn given amount of food to be randomly
 	// scattered around the environment
 	void spawnNutrients(int amount);
-
-	Species* getSpecies(uint64_t index);
-
-	int getSpeciesPopulation(const Species& species);
-
-	// Return amount of all species in the environment
-	uint64_t getSpeciesCount();
-
-private:
-	std::vector<SpeciesInEnvironment> speciesInEnvironment;
 };
 

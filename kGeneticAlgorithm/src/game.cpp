@@ -2,6 +2,7 @@
 
 #include "Simulation/environment.h"
 #include "Simulation/species.h"
+#include "Simulation/organism.h"
 
 #include "gameGUI.h"
 
@@ -9,7 +10,7 @@
 #include "Entities/Components.h"
 
 // ------------ Declare tons of stuff ------------ //
-Environment		env;
+Environment*	env						= new Environment();
 EntityManager*	entityManager			= new EntityManager();
 GameGUI*		gui						= new GameGUI();
 // ----------------------------------------------- //
@@ -19,6 +20,8 @@ SDL_Renderer*	Game::_SDLRenderer		= nullptr;
 SDL_Window*		Game::_SDLWindow		= nullptr;
 SDL_GLContext	Game::gl_context		= nullptr;
 GPU_Target*		Game::screen			= nullptr;
+//! \note There is a method in sdl-gpu for camera "GPU_Camera"
+//! maybe that could be used instead?
 GPU_Rect		Game::camera			= { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 SDL_Event		Game::m_event;
 // ----------------------------------------------- //
@@ -27,6 +30,7 @@ Game::Game()
 {
     staticInstance = this;
     emInstance = entityManager;
+	//envInstance = env;
 }
 
 Game::~Game()
@@ -37,11 +41,6 @@ Game::~Game()
 Game* Game::Get()
 {
     return staticInstance;
-}
-
-EntityManager* Game::GetEntityManager()
-{
-    return emInstance;
 }
 
 void Game::Init(const char* title, int width, int height, bool fullscreen)
@@ -61,6 +60,11 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 
         screen = GPU_Init(WINDOW_WIDTH, WINDOW_HEIGHT, GPU_DEFAULT_INIT_FLAGS);
 
+		if (screen == NULL) {
+			LOG_ERROR("Failed to initialize SDL_gpu!");
+			return;
+		}
+
         _SDLWindow = SDL_GetWindowFromID(screen->context->windowID);
 
 		//_SDLWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
@@ -77,9 +81,6 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
         if (_SDLWindow) {
             LOG_INFO("SDL Window created, resolution: {} x {}", width, height);
         }
-        if (_SDLRenderer) {
-            LOG_INFO("SDL Renderer created");
-        }
     } else {
         m_running = false;
         LOG_ERROR("Failed to initialize SDL");
@@ -88,7 +89,6 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 
     gl_context = screen->context->context;
 
-    // Enable vsync
     SDL_GL_SetSwapInterval(1);
 
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
@@ -103,26 +103,26 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
     LOG_INFO("Vendor: {}", glGetString(GL_VENDOR));
     LOG_INFO("Renderer: {}", glGetString(GL_RENDERER));
 
+	// Start the game loop
     m_running = true;
 
+	// Initialize ImGui
 	gui->OnInit();
 
-    // Create the key input controller
     auto& controller(GetEntityManager()->AddEntity());
     controller.AddComponent<KeyEvent>();
 
-    // Spawn nutrients around the environment
-    env.spawnNutrients(30);
+    env->spawnNutrients(30);
 
-    // Initialize the first species
-    auto& primum(GetEntityManager()->AddEntity());
-    primum.AddComponent<Species>("Primum", "Primus", "Specius");
+	// For testing purposes, species could later be created in the gui
+	env->addSpeciesToEnvironment("Primum", "Primus", "specius");
+	env->addSpeciesToEnvironment("Secundum", "Secundus", "specius");
+	env->addSpeciesToEnvironment("Tersium", "Tersius", "specius");
 
-    // Spawn 10 organisms
-    for (int i = 0; i < 20; i++) {
-        primum.AddComponent<OrganismComponent>();
-    }
-    //env.addSpeciesToEnvironment(&primum, 10, true)
+	for (int i = 0; i < 20; i++) {
+		auto& organismInstance(GetEntityManager()->AddEntity());;
+		organismInstance.AddComponent<OrganismComponent>();
+	}
 }
 
 void Game::HandleEvents()
@@ -145,15 +145,6 @@ void Game::Update()
 {
     GetEntityManager()->Refresh();
     GetEntityManager()->Update();
-
-	for (auto& entities : GetEntityManager()
-		->GetEntities())
-	{
-		if (entities->hasComponent<TransformComponent>()) {
-			entities->GetComponent<TransformComponent>().position.x -= Game::camera.x;
-			entities->GetComponent<TransformComponent>().position.y -= Game::camera.y;
-		}
-	}
 }
 
 void Game::Render()
@@ -168,6 +159,11 @@ void Game::Render()
 
     SDL_GL_MakeCurrent(_SDLWindow, gl_context);
     GPU_Flip(screen);
+}
+
+EntityManager* Game::GetEntityManager()
+{
+	return emInstance;
 }
 
 void Game::Clean()

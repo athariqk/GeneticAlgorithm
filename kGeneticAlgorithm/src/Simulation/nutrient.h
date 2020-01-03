@@ -17,7 +17,7 @@ public:
 		transform = &entity->AddComponent<TransformComponent>
 			(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10,
 				32, 32, 0.1f);
-		sprite = &entity->AddComponent<SpriteComponent>("assets/cell.png");
+		sprite = &entity->AddComponent<SpriteComponent>("assets/nutrient.png");
 
         collider = &entity->AddComponent<ColliderComponent>("nutrient");
 	}

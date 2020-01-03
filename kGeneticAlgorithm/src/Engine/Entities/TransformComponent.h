@@ -3,6 +3,8 @@
 #include "Components.h"
 #include "Vector2D.h"
 
+#include "game.h"
+
 struct TransformComponent : public Component {
 public:
 	Vector2D position;
@@ -54,8 +56,8 @@ public:
 
 	void OnUpdate() override
     {
-        position.x += static_cast<int>(velocity.x * speed);
-        position.y += static_cast<int>(velocity.y * speed);
+        position.x += static_cast<int>(velocity.x * speed) - Game::camera.x;
+		position.y += static_cast<int>(velocity.y * speed) - Game::camera.y;
     }
 
 };

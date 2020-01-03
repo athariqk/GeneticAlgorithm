@@ -1,16 +1,15 @@
 #pragma once
-
 #include "config.h"
 
 #include "Entities/EntitySystem.h"
-
-#include <string>
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_gpu.h>
 
 #include <glad/glad.h>
+
+#include <string>
 
 class OrganismComponent;
 
@@ -28,7 +27,8 @@ public:
     bool running() { return m_running; }
 
     static Game* Get();
-    static EntityManager* GetEntityManager();
+	static EntityManager* GetEntityManager();
+	//static Environment* GetEnvironment();
 
     static SDL_GLContext* GetContext()
     {
@@ -42,13 +42,16 @@ public:
 	static GPU_Rect camera;
 
     enum groupLabels : std::size_t {
-        Nutrients,
+        NutrientsGroup,
+		SpeciesGroup,
+		OrganismsGroup,
         Other
     };
 
 private:
     bool m_running = false;
 
+	//static Environment* envInstance;
     static EntityManager* emInstance;
     static SDL_GLContext gl_context;
     static Game* staticInstance;

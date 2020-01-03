@@ -15,20 +15,16 @@ public:
         if (Game::Get()->m_event.type == SDL_KEYDOWN) {
             switch (Game::Get()->m_event.key.keysym.sym) {
             case SDLK_w:
-				Game::camera.y -= 0.1f;
-                LOG_INFO("Pressed W key!");
+				Game::camera.y = -5;
                 break;
             case SDLK_a:
-				Game::camera.x -= 0.1f;
-                LOG_INFO("Pressed A key!");
+				Game::camera.x = -5;
                 break;
             case SDLK_d:
-				Game::camera.x += 0.1f;
-                LOG_INFO("Pressed D key!");
+				Game::camera.x = 5;
                 break;
             case SDLK_s:
-				Game::camera.y += 0.1f;
-                LOG_INFO("Pressed S key!");
+				Game::camera.y = 5;
                 break;
 			default:
 				break;
