@@ -1,7 +1,7 @@
 #include "Collision.h"
 #include "Entities/ColliderComponent.h"
 
-bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB) {
+bool Collision::AABB(const GPU_Rect& rectA, const GPU_Rect& rectB) {
 	if (rectA.x + rectB.w >= rectB.x &&
 		rectB.x + rectB.w >= rectA.x &&
 		rectA.y + rectA.h >= rectB.y &&

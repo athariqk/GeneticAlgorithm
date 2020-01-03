@@ -19,11 +19,11 @@ public:
 				32, 32, 0.1f);
 		sprite = &entity->AddComponent<SpriteComponent>("assets/nutrient.png");
 
-        collider = &entity->AddComponent<ColliderComponent>("nutrient");
+		collider = &entity->AddComponent<ColliderComponent>("nutrient");
 	}
 
 private:
 	TransformComponent* transform;
 	SpriteComponent* sprite;
-    ColliderComponent* collider;
+	ColliderComponent* collider;
 };

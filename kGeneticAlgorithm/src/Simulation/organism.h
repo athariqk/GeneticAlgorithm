@@ -1,6 +1,7 @@
 #pragma once
 
 #include "species.h"
+#include "organismAI.h"
 
 #include "Entities/Components.h"
 #include "PrimitiveShape.h"
@@ -17,72 +18,33 @@ class Species;
 class OrganismComponent : public Component {
 public:
 	// Temporary
-    OrganismComponent() : usePrimitiveShape(true) {}
+	OrganismComponent() {}
 
-    OrganismComponent(double m_fitness, Genes* gene)
-        : fitness(m_fitness), genome(gene), usePrimitiveShape(true) {}
+	OrganismComponent(double m_fitness, Genes* gene)
+		: fitness(m_fitness), genome(gene) {}
 
-    OrganismComponent(const OrganismComponent& organism)
-        : species(organism.species), usePrimitiveShape(true) {}
+	OrganismComponent(const OrganismComponent& organism)
+		: species(organism.species) {}
 
-    //OrganismComponent(Species species, const char* texturePath) :
-    //	species(&species), texture(texturePath)
-    //{}
+	~OrganismComponent() {}
 
-    ~OrganismComponent() {}
+	// For GA use
+	Species* species;
+	Genes* genome;
+	double fitness;
 
-    Species* species;
+	void OnInit() override;
+	void OnDraw() override;
 
-    Genes* genome;
+	std::string getSpeciesName();
 
-    double fitness;
-
-    void OnInit() override
-    {
-        index = std::rand() % 20 + 0;
-        transform = &entity->AddComponent<TransformComponent>
-			(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10, 10);
-
-        collider = &entity->AddComponent<ColliderComponent>("organism");
-
-        if (!usePrimitiveShape)
-            sprite = &entity->AddComponent<SpriteComponent>(texture);
-
-        nutrients = Game::GetEntityManager()->GetGroup(Game::groupLabels::NutrientsGroup);
-    }
-
-    void OnDraw() override
-    {
-        if (usePrimitiveShape) {
-            PrimitiveShape::DrawCircle(transform->position.x,
-				transform->position.y, transform->scale);
-        }
-    }
-
-	void OnUpdate() override
-	{
-		if (nutrients.at(index)->isEnabled()) {
-			// Linearly interpolate from initial position -> nutrient position
-			transform->position = transform->position.Lerp(transform->position,
-				nutrients.at(index)->GetComponent<TransformComponent>().position, 0.01f);
-		}
-	}
-
-    std::string getSpeciesName()
-    {
-        return species->genus + " " + species->epithet;
-    }
+	size_t getID();
 
 private:
-    std::vector<Entity*> nutrients;
-
 	ColliderComponent* collider;
-    TransformComponent* transform;
-    SpriteComponent* sprite;
-    //PrimitiveShape shape;
-    const char* texture;
+	TransformComponent* transform;
+	SpriteComponent* sprite;
+	OrganismAI* ai;
 
-    int index;
-
-    bool usePrimitiveShape = false;
+	size_t id = 0;
 };

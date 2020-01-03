@@ -15,44 +15,44 @@ class OrganismComponent;
 
 class Game {
 public:
-    Game();
-    ~Game();
+	Game();
+	~Game();
 
-    void Init(const char* title, int width, int height, bool fullscreen);
-    void HandleEvents();
-    void Update();
-    void Render();
-    void Clean();
+	void Init(const char* title, int width, int height, bool fullscreen);
+	void HandleEvents();
+	void Update();
+	void Render();
+	void Clean();
 
-    bool running() { return m_running; }
+	bool running() { return m_running; }
 
-    static Game* Get();
+	static Game* Get();
 	static EntityManager* GetEntityManager();
 	//static Environment* GetEnvironment();
 
-    static SDL_GLContext* GetContext()
-    {
-        return &gl_context;
-    }
+	static SDL_GLContext* GetContext()
+	{
+		return &gl_context;
+	}
 
-    static SDL_Renderer* _SDLRenderer;
-    static SDL_Window* _SDLWindow;
-    static GPU_Target* screen;
-    static SDL_Event m_event;
+	static SDL_Renderer* _SDLRenderer;
+	static SDL_Window* _SDLWindow;
+	static GPU_Target* screen;
+	static SDL_Event m_event;
 	static GPU_Rect camera;
 
-    enum groupLabels : std::size_t {
-        NutrientsGroup,
+	enum groupLabels : std::size_t {
+		NutrientsGroup,
 		SpeciesGroup,
 		OrganismsGroup,
-        Other
-    };
+		Other
+	};
 
 private:
-    bool m_running = false;
+	bool m_running = false;
 
 	//static Environment* envInstance;
-    static EntityManager* emInstance;
-    static SDL_GLContext gl_context;
-    static Game* staticInstance;
+	static EntityManager* emInstance;
+	static SDL_GLContext gl_context;
+	static Game* staticInstance;
 };

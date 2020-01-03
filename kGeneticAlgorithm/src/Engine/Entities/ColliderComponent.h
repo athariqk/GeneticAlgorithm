@@ -3,13 +3,13 @@
 #include "EntitySystem.h"
 #include "Components.h"
 
-#include "SDL.h"
+#include "SDL_gpu.h"
 
 #include <string>
 
 class ColliderComponent : public Component {
 public:
-	SDL_Rect collider;
+	GPU_Rect collider;
 	std::string tag;
 
 	TransformComponent* transform;
