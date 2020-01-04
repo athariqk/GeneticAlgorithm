@@ -18,7 +18,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["ImGui"] = "kGeneticAlgorithm/ThirdParty/imgui"
+IncludeDir["ImGui"] = "kGeneticAlgorithm/ThirdParty/imgui/"
 IncludeDir["SDL2"] = "kGeneticAlgorithm/ThirdParty/SDL2/include"
 IncludeDir["SDL2_image"] = "kGeneticAlgorithm/ThirdParty/SDL2_image/include"
 IncludeDir["GLAD"] = "kGeneticAlgorithm/ThirdParty/glad/include"
@@ -56,6 +56,7 @@ project "kGeneticAlgorithm"
         "%{prj.name}/src",
 		"%{prj.name}/src/Engine",
 		"%{prj.name}/ThirdParty/spdlog/include",
+		"%{IncludeDir.ImGui}/include",
 		"%{IncludeDir.ImGui}",
         "%{IncludeDir.SDL2}",
         "%{IncludeDir.SDL2_image}",

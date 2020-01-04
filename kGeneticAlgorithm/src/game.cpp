@@ -10,16 +10,14 @@
 #include "Entities/Components.h"
 
 // ------------ Declare tons of stuff ------------ //
-// --- And try not to use raw pointers so often -- //
-Environment*	env						= new Environment();
-EntityManager*	entityManager			= new EntityManager();
-GameGUI*		gui						= new GameGUI();
+EntityManager	entityManager;
+GameGUI			gui;
+Environment		env;
+SDL_GLContext	gl_context;
 // ----------------------------------------------- //
-EntityManager*	Game::emInstance		= nullptr;
 Game*			Game::staticInstance	= nullptr;
 SDL_Renderer*	Game::_SDLRenderer		= nullptr;
 SDL_Window*		Game::_SDLWindow		= nullptr;
-SDL_GLContext	Game::gl_context		= nullptr;
 GPU_Target*		Game::screen			= nullptr;
 //! \note There is a method in sdl-gpu for camera "GPU_Camera"
 //! maybe that could be used instead?
@@ -30,7 +28,6 @@ SDL_Event		Game::m_event;
 Game::Game()
 {
 	staticInstance = this;
-	emInstance = entityManager;
 }
 
 Game::~Game()
@@ -51,10 +48,6 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 		flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		LOG_INFO("SDL Subsystems initialized");
 
@@ -66,11 +59,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 		}
 
 		_SDLWindow = SDL_GetWindowFromID(screen->context->windowID);
-
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+		gl_context = screen->context->context;
 
 		if (_SDLWindow) {
 			LOG_INFO("SDL Window created, resolution: {} x {}", width, height);
@@ -81,10 +70,6 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 		LOG_ERROR("Failed to initialize SDL");
 		return;
 	}
-
-	gl_context = screen->context->context;
-
-	SDL_GL_SetSwapInterval(1);
 
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 		LOG_ERROR("Failed to initialize Glad!");
@@ -103,20 +88,15 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 	m_running = true;
 
 	// Initialize ImGui
-	gui->OnInit();
+	gui.OnInit();
 
-	auto& controller(GetEntityManager()->AddEntity());
+	auto& controller(entityManager.AddEntity());
 	controller.AddComponent<KeyEvent>();
 
-	env->spawnNutrients(30);
-
-	// For testing purposes, species could later be created in the gui
-	env->addSpeciesToEnvironment("Primum", "Primus", "specius");
-	env->addSpeciesToEnvironment("Secundum", "Secundus", "specius");
-	env->addSpeciesToEnvironment("Tersium", "Tersius", "specius");
+	env.spawnNutrients(30);
 
 	for (int i = 0; i < 20; i++) {
-		auto& organismInstance(GetEntityManager()->AddEntity());;
+		auto& organismInstance(entityManager.AddEntity());;
 		organismInstance.AddComponent<OrganismComponent>();
 	}
 }
@@ -125,10 +105,10 @@ void Game::HandleEvents()
 {
 	SDL_PollEvent(&m_event);
 
-	switch (m_event.type) {
-		GetEntityManager()->Event();
-		gui->OnImGuiEvent();
+	entityManager.Event();
+	gui.OnImGuiEvent();
 
+	switch (m_event.type) {
 	case SDL_QUIT:
 		m_running = false;
 		break;
@@ -139,33 +119,41 @@ void Game::HandleEvents()
 
 void Game::Update()
 {
-	GetEntityManager()->Refresh();
-	GetEntityManager()->Update();
+	entityManager.Refresh();
+	entityManager.Update();
 }
 
 void Game::Render()
 {
 	GPU_ClearRGBA(screen, 0, 0, 0, 255);
 
-	GetEntityManager()->Draw();
+	entityManager.Draw();
 
 	GPU_FlushBlitBuffer();
 
-	gui->OnImGuiRender();
+	gui.OnImGuiRender();
 
 	SDL_GL_MakeCurrent(_SDLWindow, gl_context);
 	GPU_Flip(screen);
 }
 
-EntityManager* Game::GetEntityManager()
+EntityManager& Game::getEntityManager()
 {
-	return emInstance;
+	return entityManager;
+}
+
+Environment& Game::getEnvironment() {
+	return env;
+}
+
+SDL_GLContext& Game::getGLContext() {
+	return gl_context;
 }
 
 void Game::Clean()
 {
-	gui->OnImGuiClear();
-	GetEntityManager()->Clear();
+	gui.OnImGuiClear();
+	entityManager.Clear();
 
 	GPU_Quit();
 	SDL_Quit();

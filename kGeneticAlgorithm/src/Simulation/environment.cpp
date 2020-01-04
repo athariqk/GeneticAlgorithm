@@ -7,14 +7,15 @@
 void Environment::addSpeciesToEnvironment(const std::string& name,
 	const std::string& genus, const std::string& epithet)
 {
-	auto& speciesInstance(Game::GetEntityManager()->AddEntity());
+	auto& speciesInstance(Game::Get()->getEntityManager().AddEntity());
 	speciesInstance.AddComponent<Species>(name, genus, epithet);
 	speciesInstance.AddGroup(Game::groupLabels::SpeciesGroup);
-	LOG_INFO("Added species {} to the environment", name);
+	LOG_INFO("Added species {} to the environment",
+		speciesInstance.GetComponent<Species>().getFormattedName(true));
 }
 
 Species* Environment::getSpecies(const Species* species) {
-	auto& m_species(Game::GetEntityManager()->
+	auto& m_species(Game::Get()->getEntityManager().
 		GetGroup(Game::groupLabels::SpeciesGroup));
 
 	for (auto& i : m_species) {
@@ -25,7 +26,7 @@ Species* Environment::getSpecies(const Species* species) {
 }
 
 uint64_t Environment::getSpeciesCount() const {
-	auto& m_species(Game::GetEntityManager()->
+	auto& m_species(Game::Get()->getEntityManager().
 		GetGroup(Game::groupLabels::SpeciesGroup));
 
 	return m_species.size();
@@ -33,7 +34,7 @@ uint64_t Environment::getSpeciesCount() const {
 
 void Environment::spawnNutrients(int amount) {
     for (int i = 0; i < amount; i++) {
-        auto& nutrient(Game::GetEntityManager()->AddEntity());
+        auto& nutrient(Game::Get()->getEntityManager().AddEntity());
         nutrient.AddComponent<Nutrient>(10);
 		nutrient.AddGroup(Game::groupLabels::NutrientsGroup);
     }

@@ -15,5 +15,8 @@ public:
 
 private:
     ImGuiLayer* imgui;
-    bool show_demo_window = true;
+	bool showCreateSpecies = false;
+
+	std::string sGenus;
+	std::string sEpithet;
 };

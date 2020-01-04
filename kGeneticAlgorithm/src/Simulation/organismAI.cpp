@@ -14,8 +14,6 @@ void OrganismAI::OnInit() {
 	transform = &entity->GetComponent<TransformComponent>();
 	collider = &entity->GetComponent<ColliderComponent>();
 
-	nutrientsPresent = Game::GetEntityManager()->GetGroup(Game::groupLabels::NutrientsGroup);
-
 	if (transform == NULL) {
 		LOG_ERROR("Agent has no transform component!");
 		runAI = false;
@@ -81,7 +79,7 @@ Vector2D& OrganismAI::getRandomDirection() {
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(-2, 2);
+	std::uniform_int_distribution<> dis(-5, 5);
 
 	direction.x = dis(gen);
 	direction.y = dis(gen);
@@ -94,17 +92,8 @@ void OrganismAI::runAndTumble() {
 		hasMoved = true;
 		transform->velocity = getRandomDirection();
 	}
-
-	for (auto& nutrient : nutrientsPresent) {
-		if (Collision::AABB(collider->collider, nutrient->
-			GetComponent<ColliderComponent>().collider))
-		{
-			//isNutrientFound = true;
-		}
-	}
 }
 
 void OrganismAI::absorbNutrient() {
-	hunger = 0;
-	isNutrientFound = false;
+
 }

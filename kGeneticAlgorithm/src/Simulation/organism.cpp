@@ -21,5 +21,5 @@ std::string OrganismComponent::getSpeciesName()
 }
 
 size_t OrganismComponent::getID() {
-	return id++;
+	return std::rand() % 100 + 1;
 }

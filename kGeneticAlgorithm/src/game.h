@@ -4,14 +4,13 @@
 #include "Entities/EntitySystem.h"
 
 #include <SDL.h>
-#include <SDL_image.h>
 #include <SDL_gpu.h>
 
 #include <glad/glad.h>
 
 #include <string>
 
-class OrganismComponent;
+class Environment;
 
 class Game {
 public:
@@ -27,13 +26,12 @@ public:
 	bool running() { return m_running; }
 
 	static Game* Get();
-	static EntityManager* GetEntityManager();
-	//static Environment* GetEnvironment();
 
-	static SDL_GLContext* GetContext()
-	{
-		return &gl_context;
-	}
+	EntityManager& getEntityManager();
+
+	Environment& getEnvironment();
+
+	SDL_GLContext& getGLContext();
 
 	static SDL_Renderer* _SDLRenderer;
 	static SDL_Window* _SDLWindow;
@@ -51,8 +49,5 @@ public:
 private:
 	bool m_running = false;
 
-	//static Environment* envInstance;
-	static EntityManager* emInstance;
-	static SDL_GLContext gl_context;
 	static Game* staticInstance;
 };

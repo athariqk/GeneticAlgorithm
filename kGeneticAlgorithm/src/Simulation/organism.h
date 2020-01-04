@@ -38,6 +38,8 @@ public:
 
 	std::string getSpeciesName();
 
+	//! \todo Implement real ID counting
+	//! instead of just random numbers
 	size_t getID();
 
 private:

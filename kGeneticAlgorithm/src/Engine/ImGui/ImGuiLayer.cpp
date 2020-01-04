@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-ImGuiLayer::ImGuiLayer(SDL_Window* window, SDL_GLContext* context)
+ImGuiLayer::ImGuiLayer(SDL_Window* window, SDL_GLContext& context)
 {
 	if (!window) {
         LOG_ERROR("Failed to initialize ImGui, window is missing!");
@@ -17,8 +17,7 @@ ImGuiLayer::ImGuiLayer(SDL_Window* window, SDL_GLContext* context)
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void)io;
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
 
     ImGui_ImplSDL2_InitForOpenGL(window, context);
     ImGui_ImplOpenGL3_Init("#version 130");

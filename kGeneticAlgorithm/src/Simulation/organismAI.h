@@ -37,8 +37,6 @@ public:
 	bool runAI = false;
 
 private:
-	std::vector<Entity*> nutrientsPresent;
-
 	BehaviourState behaviourState;
 	TransformComponent* transform;
 	ColliderComponent* collider;
