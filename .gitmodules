@@ -4,3 +4,6 @@
 [submodule "kGeneticAlgorithm/ThirdParty/sdl-gpu"]
 	path = kGeneticAlgorithm/ThirdParty/sdl-gpu
 	url = https://github.com/grimfang4/sdl-gpu.git
+[submodule "kGeneticAlgorithm/ThirdParty/imgui"]
+	path = kGeneticAlgorithm/ThirdParty/imgui
+	url = https://github.com/Kasterisk/imgui.git
