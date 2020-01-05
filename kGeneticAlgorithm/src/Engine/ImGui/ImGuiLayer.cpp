@@ -27,8 +27,6 @@ ImGuiLayer::ImGuiLayer(SDL_Window* window, SDL_GLContext& context)
 	LOG_INFO("ImGui Initialized");
 }
 
-ImGuiLayer::~ImGuiLayer() {}
-
 void ImGuiLayer::OnEvent(SDL_Event& event)
 {
     ImGui_ImplSDL2_ProcessEvent(&event);

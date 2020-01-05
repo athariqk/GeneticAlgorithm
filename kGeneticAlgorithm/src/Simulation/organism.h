@@ -18,7 +18,8 @@ class Species;
 class OrganismComponent : public Component {
 public:
 	// Temporary
-	OrganismComponent() {}
+	OrganismComponent(float initialEnergy) :
+		energy(initialEnergy) {}
 
 	OrganismComponent(double m_fitness, Genes* gene)
 		: fitness(m_fitness), genome(gene) {}
@@ -28,13 +29,15 @@ public:
 
 	~OrganismComponent() {}
 
+	void OnInit() override;
+	void OnDraw() override;
+
 	// For GA use
 	Species* species;
 	Genes* genome;
 	double fitness;
 
-	void OnInit() override;
-	void OnDraw() override;
+	float energy;
 
 	std::string getSpeciesName();
 
@@ -43,6 +46,8 @@ public:
 	size_t getID();
 
 private:
+	PrimitiveShape circleShape;
+	
 	ColliderComponent* collider;
 	TransformComponent* transform;
 	SpriteComponent* sprite;

@@ -8,7 +8,6 @@
  * Simple predefined AI for the organisms
  * neural network could be used later instead
 */
-
 enum BehaviourState {
 	Idling = 0,
 	RunAndTumble = 1,
@@ -17,8 +16,8 @@ enum BehaviourState {
 
 class OrganismAI : public Component {
 public:
-	OrganismAI(float organismSpeed, float aiInterval, int hunger) :
-		moveSpeed(organismSpeed), actInterval(aiInterval), maxHunger(hunger) {}
+	OrganismAI(float organismSpeed, float aiInterval) :
+		moveSpeed(organismSpeed), actInterval(aiInterval) {}
 	~OrganismAI() {}
 
 	void OnInit() override;
@@ -26,13 +25,14 @@ public:
 
 	void runAndTumble();
 	void absorbNutrient();
+	void checkForNutrients();
 
 	Vector2D& getRandomDirection();
 
-	float moveSpeed;
+	std::string getCurrentBehaviour();
 
-	int maxHunger;
-	int hunger;
+	float moveSpeed;
+	float absorbSpeed = 0.1f;
 
 	bool runAI = false;
 
@@ -40,11 +40,15 @@ private:
 	BehaviourState behaviourState;
 	TransformComponent* transform;
 	ColliderComponent* collider;
+	Nutrient* caughtNutrient;
 
 	float actInterval = 10;
 	float movingInterval = 10;
 	float actTimer = 0;
 
+	float organismEnergy;
+
 	bool isNutrientFound = false;
 	bool hasMoved = false;
+	bool isAbsorbing = false;
 };

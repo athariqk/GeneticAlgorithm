@@ -2,6 +2,8 @@
 #include "species.h"
 #include "config.h"
 
+#include "nutrient.h"
+
 #include <vector>
 
 class Environment
@@ -13,9 +15,10 @@ public:
 	void addSpeciesToEnvironment(const std::string& name,
 		const std::string& genus, const std::string& epithet);
 
-	Species* getSpecies(const Species* species);
+	// Temporary
+	void addOrganismToEnvironment();
 
-	uint64_t getSpeciesCount() const;
+	void clearOrganisms();
 
 	// Spawn cell of a given species randomly
 	// around the environment
@@ -24,5 +27,9 @@ public:
 	// Spawn given amount of food to be randomly
 	// scattered around the environment
 	void spawnNutrients(int amount);
+
+	Species* getSpecies(const Species* species);
+
+	uint64_t getSpeciesCount() const;
 };
 

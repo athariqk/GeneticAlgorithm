@@ -2,6 +2,8 @@
 #include "organism.h"
 #include "game.h"
 
+#include "Simulation/environment.h"
+
 #include "Collision.h"
 
 #include <random>
@@ -22,17 +24,24 @@ void OrganismAI::OnInit() {
 		runAI = true;
 	}
 
-	LOG_INFO("Initialized AI for organism {}",
-		entity->GetComponent<OrganismComponent>().getID());
+	organismEnergy = entity->GetComponent<OrganismComponent>().energy;
 }
 
 void OrganismAI::OnUpdate() {
 	if (runAI) {
-		hunger++;
+		entity->GetComponent<OrganismComponent>().energy = organismEnergy;
+
+		if(!isAbsorbing)
+			organismEnergy -= 0.01f;
+
+		if (organismEnergy < 0)
+			organismEnergy = 0;
+
+		if (organismEnergy > 100)
+			organismEnergy = 100;
 
 		switch (behaviourState) {
 		case BehaviourState::Idling:
-			transform->velocity.Zero();
 			hasMoved = false;
 			actTimer++;
 			
@@ -45,8 +54,9 @@ void OrganismAI::OnUpdate() {
 		case BehaviourState::RunAndTumble:
 			actTimer++;
 			runAndTumble();
+			checkForNutrients();
 
-			if (isNutrientFound) {
+			if (isNutrientFound && caughtNutrient->energy > 0) {
 				behaviourState = BehaviourState::Absorbing;
 				actTimer = 0;
 			}
@@ -58,12 +68,20 @@ void OrganismAI::OnUpdate() {
 			break;
 
 		case BehaviourState::Absorbing:
-			transform->velocity.Zero();
+			isAbsorbing = true;
 			absorbNutrient();
 			actTimer++;
 
+			if (!isNutrientFound) {
+				behaviourState = BehaviourState::RunAndTumble;
+				isAbsorbing = false;
+				actTimer = 0;
+			}
+
 			if (actTimer > actInterval) {
 				behaviourState = BehaviourState::RunAndTumble;
+				isNutrientFound = false;
+				isAbsorbing = false;
 				actTimer = 0;
 			}
 			break;
@@ -94,6 +112,64 @@ void OrganismAI::runAndTumble() {
 	}
 }
 
-void OrganismAI::absorbNutrient() {
+void OrganismAI::checkForNutrients() {
+	auto& nutrients(Game::Get()->getEntityManager().
+		GetGroup(Game::groupLabels::NutrientsGroup));
 
+	for (auto e : nutrients) {
+		if (Collision::AABB(collider->collider,
+			e->GetComponent<ColliderComponent>().collider))
+		{
+			caughtNutrient = &e->GetComponent<Nutrient>();
+			actTimer = 0;
+			isNutrientFound = true;
+		}
+	}
+}
+
+void OrganismAI::absorbNutrient() {
+	if (caughtNutrient == nullptr) {
+		LOG_ERROR("Nutrient is not found while trying to absorb it!");
+		isNutrientFound = false;
+	}
+	else if (caughtNutrient->energy == 0) {
+		isNutrientFound = false;
+		if (caughtNutrient != nullptr) {
+			caughtNutrient = nullptr;
+		}
+	}
+	else {
+		transform->velocity.Zero();
+
+		///! \todo The energy exchange should be
+		//! evenly distributed
+		organismEnergy += caughtNutrient->energy * absorbSpeed;
+		caughtNutrient->energy -= absorbSpeed;
+
+		if (caughtNutrient->energy == 0) {
+			isNutrientFound = false;
+
+			if (caughtNutrient != nullptr) {
+				caughtNutrient = nullptr;
+			}
+		}
+	}
+}
+
+std::string OrganismAI::getCurrentBehaviour() {
+	std::string result;
+
+	if (behaviourState == BehaviourState::Idling) {
+		// This is because the idle state currently
+		// just only changes the direction
+		result = "Run & Tumble";
+	}
+	if (behaviourState == BehaviourState::RunAndTumble) {
+		result = "Run & Tumble";
+	}
+	if (behaviourState == BehaviourState::Absorbing) {
+		result = "Absorbing nutrient";
+	}
+
+	return result;
 }

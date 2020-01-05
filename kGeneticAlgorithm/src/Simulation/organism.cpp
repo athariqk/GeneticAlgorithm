@@ -2,17 +2,21 @@
 
 void OrganismComponent::OnInit()
 {
-	// Add transform and collider components first
+	id = std::rand() % 20 + 1;
+
+	// Add neccesary components
 	transform = &entity->AddComponent<TransformComponent>
-		(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10, 10);
+		(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10, 10, 10, 5);
+
 	collider = &entity->AddComponent<ColliderComponent>("organism");
-	ai = &entity->AddComponent<OrganismAI>(1, 50, 50);
+
+	ai = &entity->AddComponent<OrganismAI>(1, 50);
 }
 
 void OrganismComponent::OnDraw()
 {
-	PrimitiveShape::DrawCircle(transform->position.x,
-		transform->position.y, transform->scale);
+	circleShape.DrawCircle(transform->position.x,
+		transform->position.y, transform->width);
 }
 
 std::string OrganismComponent::getSpeciesName()
@@ -21,5 +25,5 @@ std::string OrganismComponent::getSpeciesName()
 }
 
 size_t OrganismComponent::getID() {
-	return std::rand() % 100 + 1;
+	return id;
 }

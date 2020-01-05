@@ -14,7 +14,6 @@ public:
 	}
 
 	~SpriteComponent() {
-		GPU_FreeImage(texture);
 	}
 
 	void OnInit() override {

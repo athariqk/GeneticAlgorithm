@@ -1,7 +1,8 @@
 #pragma once
-
 #include "EntitySystem.h"
 #include "Components.h"
+#include "PrimitiveShape.h"
+#include "Collision.h"
 
 #include "SDL_gpu.h"
 
@@ -31,4 +32,16 @@ public:
 		collider.w = transform->width * transform->scale;
 		collider.h = transform->height * transform->scale;
 	}
+
+	void OnDraw() override {
+		if (debug) {
+			colShape.DrawCircle(collider.x, collider.y, collider.w);
+		}
+	}
+
+	//! \note Enable the collider shape to be visible
+	bool debug = false;
+
+private:
+	PrimitiveShape colShape;
 };

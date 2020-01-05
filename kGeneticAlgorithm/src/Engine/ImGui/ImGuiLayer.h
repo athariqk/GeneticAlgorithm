@@ -9,7 +9,7 @@
 class ImGuiLayer {
 public:
     ImGuiLayer(SDL_Window* window, SDL_GLContext& context);
-    ~ImGuiLayer();
+	~ImGuiLayer() {}
 
     void OnEvent(SDL_Event& event);
     void Begin(SDL_Window* window);
