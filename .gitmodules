@@ -1,6 +1,3 @@
-[submodule "kGeneticAlgorithm/ThirdParty/imgui"]
-	path = kGeneticAlgorithm/ThirdParty/imgui
-	url = https://github.com/ocornut/imgui.git
 [submodule "kGeneticAlgorithm/ThirdParty/spdlog"]
 	path = kGeneticAlgorithm/ThirdParty/spdlog
 	url = https://github.com/gabime/spdlog.git
