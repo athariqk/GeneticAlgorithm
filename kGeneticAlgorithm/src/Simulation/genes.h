@@ -8,24 +8,23 @@ public:
 	Genes() {
 		m_DNA = {
 			getRandomValue(10, 100),
-			getRandomValue(10, 100),
-			getRandomValue(5, 20),
-			getRandomValue(5, 50),
-			getRandomValue(5, 50),
-			getRandomValue(1, 5)
+			getRandomValue(1, 10)
 		};
 	}
 
 	// Traits of the organism
 	struct DNA {
-		float aggression, fear, size,
-			speed, strength, mutationRate;
+		float energyCapacity, speed;
 	};
 
 	DNA m_DNA;
 
 	float getRandomValue(int min, int max) {
-		return static_cast<float>(std::rand() % max + min);
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> dis(min, max);
+
+		return dis(gen);
 	}
 
 	void crossover() {

@@ -4,8 +4,6 @@
 
 #include "nutrient.h"
 
-#include <vector>
-
 class Environment
 {
 public:
@@ -15,21 +13,20 @@ public:
 	void addSpeciesToEnvironment(const std::string& name,
 		const std::string& genus, const std::string& epithet);
 
-	// Temporary
-	void addOrganismToEnvironment();
-
-	void clearOrganisms();
-
-	// Spawn cell of a given species randomly
-	// around the environment
-	//void spawnCell(Species& species, int amount);
-
 	// Spawn given amount of food to be randomly
 	// scattered around the environment
 	void spawnNutrients(int amount);
 
+	void clearOrganisms();
+
+	std::vector<Species*>& getAllSpecies();
+
 	Species* getSpecies(const Species* species);
 
-	uint64_t getSpeciesCount() const;
+	Species* getSpecies(std::string name);
+
+private:
+	//! \todo Maybe hold vector of entities instead?
+	std::vector<Species*> speciesInEnvironment;
 };
 

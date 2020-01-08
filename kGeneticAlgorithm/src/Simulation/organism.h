@@ -13,16 +13,11 @@
 
 #include <SDL_gpu.h>
 
-class Species;
-
 class OrganismComponent : public Component {
 public:
-	// Temporary
-	OrganismComponent(float initialEnergy) :
-		energy(initialEnergy) {}
-
-	OrganismComponent(double m_fitness, Genes* gene)
-		: fitness(m_fitness), genome(gene) {}
+	OrganismComponent(Genes* gene) :
+		genome(gene)
+	{}
 
 	OrganismComponent(const OrganismComponent& organism)
 		: species(organism.species) {}
@@ -30,24 +25,27 @@ public:
 	~OrganismComponent() {}
 
 	void OnInit() override;
+	void OnUpdate() override;
 	void OnDraw() override;
 
-	// For GA use
+	// For GA purposes
 	Species* species;
 	Genes* genome;
 	double fitness;
 
-	float energy;
-
 	std::string getSpeciesName();
+
+	OrganismAI* getAI();
 
 	//! \todo Implement real ID counting
 	//! instead of just random numbers
 	size_t getID();
 
+	float curEnergy;
+
 private:
+	// Components
 	PrimitiveShape circleShape;
-	
 	ColliderComponent* collider;
 	TransformComponent* transform;
 	SpriteComponent* sprite;

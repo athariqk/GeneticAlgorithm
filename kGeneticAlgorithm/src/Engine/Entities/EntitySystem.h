@@ -51,7 +51,8 @@ public:
 
 class Entity {
 public:
-    Entity(EntityManager& mManager) : manager(mManager) {}
+    Entity(EntityManager& mManager) :
+		manager(mManager) {}
 
     void OnUpdate()
     {

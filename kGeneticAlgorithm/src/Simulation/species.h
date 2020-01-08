@@ -7,33 +7,30 @@
 #include <string>
 #include <vector>
 
+class OrganismComponent;
+
 class Species : public Component
 {
 public:
 	Species() = default;
 	Species(const std::string& name, const std::string& genus,
 		const std::string& epithet);
-	~Species();
+	~Species() {}
 
-	size_t GetID();
+	void addOrganism();
 
-	//void setPopulation(int32_t population);
+	size_t getPopulationCount() const;
 
-	//bool addOrganism(OrganismComponent* organism);
+	size_t getID();
 
-	//bool removeOrganism(OrganismComponent* organism);
+	std::string getFormattedName(bool identifier);
 
-	//bool reproduce(uint64_t generation, Population* population,
-	//	std::vector<Species*> sortedSpecies);
-
-	//bool sortFitness();
+	std::vector<OrganismComponent*>& getOrganisms();
 
 	int age;
 	double averageFitness;
 	double maxFitness;
 	double maxFitnessEver;
-
-	std::string getFormattedName(bool identifier);
 
 	std::string name;
 	std::string genus;
@@ -41,13 +38,12 @@ public:
 
 	Genes genes;
 
-	bool finished;
-
-	int32_t population;
-
 	int32_t generation;
 
 private:
-	size_t incrementor;
+	//! \todo Maybe hold vector of entities instead?
+	std::vector<OrganismComponent*> organisms;
+
+	size_t id;
 };
 

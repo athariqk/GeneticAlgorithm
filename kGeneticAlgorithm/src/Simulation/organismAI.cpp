@@ -12,9 +12,10 @@
 void OrganismAI::OnInit() {
 	behaviourState = BehaviourState::Idling;
 
-	// Get all neccesary components
+	// Get all of the neccesary components
 	transform = &entity->GetComponent<TransformComponent>();
 	collider = &entity->GetComponent<ColliderComponent>();
+	organism = &entity->GetComponent<OrganismComponent>();
 
 	if (transform == NULL) {
 		LOG_ERROR("Agent has no transform component!");
@@ -23,23 +24,10 @@ void OrganismAI::OnInit() {
 		transform->speed = moveSpeed;
 		runAI = true;
 	}
-
-	organismEnergy = entity->GetComponent<OrganismComponent>().energy;
 }
 
 void OrganismAI::OnUpdate() {
 	if (runAI) {
-		entity->GetComponent<OrganismComponent>().energy = organismEnergy;
-
-		if(!isAbsorbing)
-			organismEnergy -= 0.01f;
-
-		if (organismEnergy < 0)
-			organismEnergy = 0;
-
-		if (organismEnergy > 100)
-			organismEnergy = 100;
-
 		switch (behaviourState) {
 		case BehaviourState::Idling:
 			hasMoved = false;
@@ -56,7 +44,8 @@ void OrganismAI::OnUpdate() {
 			runAndTumble();
 			checkForNutrients();
 
-			if (isNutrientFound && caughtNutrient->energy > 0) {
+			// Absorb the nutrient if energy is below 70
+			if (isNutrientFound && organism->curEnergy < 70.0f) {
 				behaviourState = BehaviourState::Absorbing;
 				actTimer = 0;
 			}
@@ -78,7 +67,7 @@ void OrganismAI::OnUpdate() {
 				actTimer = 0;
 			}
 
-			if (actTimer > actInterval) {
+			if (actTimer > actInterval * 5) {
 				behaviourState = BehaviourState::RunAndTumble;
 				isNutrientFound = false;
 				isAbsorbing = false;
@@ -97,7 +86,9 @@ Vector2D& OrganismAI::getRandomDirection() {
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(-5, 5);
+	std::uniform_int_distribution<> dis(
+		-5,
+		5);
 
 	direction.x = dis(gen);
 	direction.y = dis(gen);
@@ -116,13 +107,16 @@ void OrganismAI::checkForNutrients() {
 	auto& nutrients(Game::Get()->getEntityManager().
 		GetGroup(Game::groupLabels::NutrientsGroup));
 
-	for (auto e : nutrients) {
+	for (auto& e : nutrients) {
 		if (Collision::AABB(collider->collider,
 			e->GetComponent<ColliderComponent>().collider))
 		{
 			caughtNutrient = &e->GetComponent<Nutrient>();
 			actTimer = 0;
 			isNutrientFound = true;
+			//LOG_TRACE("Organism {} Collider enter {}",
+			//	entity->GetComponent<OrganismComponent>().getID(),
+			//	caughtNutrient->getID());
 		}
 	}
 }
@@ -132,7 +126,7 @@ void OrganismAI::absorbNutrient() {
 		LOG_ERROR("Nutrient is not found while trying to absorb it!");
 		isNutrientFound = false;
 	}
-	else if (caughtNutrient->energy == 0) {
+	else if (caughtNutrient->curEnergy == 0) {
 		isNutrientFound = false;
 		if (caughtNutrient != nullptr) {
 			caughtNutrient = nullptr;
@@ -141,12 +135,17 @@ void OrganismAI::absorbNutrient() {
 	else {
 		transform->velocity.Zero();
 
-		///! \todo The energy exchange should be
-		//! evenly distributed
-		organismEnergy += caughtNutrient->energy * absorbSpeed;
-		caughtNutrient->energy -= absorbSpeed;
+		if (caughtNutrient->curEnergy > 0)
+			organism->curEnergy += absorbSpeed;
 
-		if (caughtNutrient->energy == 0) {
+		caughtNutrient->curEnergy -= absorbSpeed;
+
+		// Increase the fitness each time it succesfully
+		// absorbs nutrients
+		organism->fitness += 0.05f;
+
+		// Clear the caught nutrient if its energy is depleted
+		if (caughtNutrient->curEnergy == 0) {
 			isNutrientFound = false;
 
 			if (caughtNutrient != nullptr) {

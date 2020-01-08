@@ -1,5 +1,8 @@
 #include "species.h"
+#include "organism.h"
 #include "game.h"
+
+#include "Simulation/environment.h"
 
 #include <iostream>
 
@@ -10,28 +13,25 @@ Species::Species(const std::string& name, const std::string& genus,
 	epithet(epithet)
 {}
 
-Species::~Species() {}
-
-/*
-bool Species::addOrganism(OrganismComponent* organism) {
-	auto& m_org(Game::GetEntityManager()->AddEntity());
-	m_org.AddComponent<OrganismComponent>(organism);
-	m_org.AddGroup(1);
-	return true;
-}
-*/
-
-/*
-void Species::setPopulation(int32_t population)
+void Species::addOrganism()
 {
-	if (population < 0) {
-		this->population = 0;
-	}
-	else {
-		this->population = population;
-	}
+	auto& instance(Game::Get()->getEntityManager().AddEntity());
+	instance.AddComponent<OrganismComponent>(&genes);
+	organisms.push_back(&instance.GetComponent<OrganismComponent>());
+
+	LOG_INFO("Added organism of species {}, Population: {}",
+		getFormattedName(false), getPopulationCount());
 }
-*/
+
+size_t Species::getPopulationCount() const
+{
+	return organisms.size();
+}
+
+std::vector<OrganismComponent*>& Species::getOrganisms()
+{
+	return organisms;
+}
 
 std::string Species::getFormattedName(bool identifier)
 {
@@ -45,6 +45,6 @@ std::string Species::getFormattedName(bool identifier)
 	return result;
 }
 
-size_t Species::GetID() {
-	return incrementor++;
+size_t Species::getID() {
+	return id;
 }

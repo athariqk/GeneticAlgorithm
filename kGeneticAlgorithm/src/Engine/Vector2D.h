@@ -28,6 +28,6 @@ public:
 
     float length() const;
 
-	Vector2D& Lerp(const Vector2D& vec1, const Vector2D& vec2, float amount);
+	static Vector2D& Lerp(const Vector2D& vec1, const Vector2D& vec2, float amount);
 
 };

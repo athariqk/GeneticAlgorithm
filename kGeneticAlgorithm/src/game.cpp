@@ -96,14 +96,7 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 
 	env.spawnNutrients(30);
 
-	// The species should be created first inside the species
-	// class, but for testing purposes the organisms could
-	// be spawned here instead
-	for (int i = 0; i < 20; i++) {
-		auto& organismInstance(entityManager.AddEntity());;
-		organismInstance.AddComponent<OrganismComponent>(100);
-		organismInstance.AddGroup(groupLabels::OrganismsGroup);
-	}
+	env.addSpeciesToEnvironment("Primum", "Primus", "specius");
 }
 
 void Game::HandleEvents()

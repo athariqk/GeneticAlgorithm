@@ -14,6 +14,8 @@ enum BehaviourState {
 	Absorbing = 2
 };
 
+class OrganismComponent;
+
 class OrganismAI : public Component {
 public:
 	OrganismAI(float organismSpeed, float aiInterval) :
@@ -29,15 +31,17 @@ public:
 
 	Vector2D& getRandomDirection();
 
+	//! \brief Returns behaviour name
 	std::string getCurrentBehaviour();
 
 	float moveSpeed;
-	float absorbSpeed = 0.1f;
+	float absorbSpeed = 0.2f;
 
 	bool runAI = false;
 
 private:
 	BehaviourState behaviourState;
+	OrganismComponent* organism;
 	TransformComponent* transform;
 	ColliderComponent* collider;
 	Nutrient* caughtNutrient;
@@ -45,8 +49,6 @@ private:
 	float actInterval = 10;
 	float movingInterval = 10;
 	float actTimer = 0;
-
-	float organismEnergy;
 
 	bool isNutrientFound = false;
 	bool hasMoved = false;

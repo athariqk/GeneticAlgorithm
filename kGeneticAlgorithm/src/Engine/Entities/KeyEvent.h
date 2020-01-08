@@ -15,16 +15,16 @@ public:
         if (Game::Get()->m_event.type == SDL_KEYDOWN) {
             switch (Game::Get()->m_event.key.keysym.sym) {
             case SDLK_w:
-				Game::camera.y = -5;
+				Game::camera.y = -6;
                 break;
             case SDLK_a:
-				Game::camera.x = -5;
+				Game::camera.x = -6;
                 break;
             case SDLK_d:
-				Game::camera.x = 5;
+				Game::camera.x = 6;
                 break;
             case SDLK_s:
-				Game::camera.y = 5;
+				Game::camera.y = 6;
                 break;
 			default:
 				break;

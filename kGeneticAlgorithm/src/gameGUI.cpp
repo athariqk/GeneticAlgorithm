@@ -20,37 +20,52 @@ void GameGUI::OnImGuiRender()
 {
     imgui->Begin(Game::Get()->_SDLWindow);
 
-	// ----- Environment window|begin| ------- //
 	{
+		// ----- Environment Window|begin| ------- //
 		ImGui::Begin("Environment", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
-		auto& species(Game::Get()->getEntityManager().GetGroup(
-			Game::groupLabels::SpeciesGroup));
+		auto species = Game::Get()->getEnvironment().getAllSpecies();
+
 		if (ImGui::TreeNode("SpeciesList", "Species present: %i", species.size())) {
 			for (int s = 0; s < species.size(); s++) {
-				ImGui::Text(species[s]->GetComponent<Species>().
-					getFormattedName(true).c_str());
-			}
-			ImGui::TreePop();
-		}
+				ImGui::PushID(s);
 
-		auto& organisms(Game::Get()->getEntityManager().GetGroup(
-			Game::groupLabels::OrganismsGroup));
-		if (ImGui::TreeNode("OrganismList", "Organisms present: %i", organisms.size())) {
-			for (int o = 0; o < organisms.size(); o++) {
-				ImGui::Text("Organism %i: %s, energy %.0f",
-					organisms[o]->GetComponent<OrganismComponent>().getID(),
-					organisms[o]->GetComponent<OrganismAI>().getCurrentBehaviour().c_str(),
-					organisms[o]->GetComponent<OrganismComponent>().energy);
-			}
+				if (ImGui::TreeNode("specificSpecies", "%s %i",
+					species.at(s)->getFormattedName(false).c_str(),
+					species.at(s)->getPopulationCount()))
+				{
+					//! \brief The organisms vector in the species class
+					//! is not synchronized with the one that the entity
+					//! system holds because obviously its seperated, and
+					//! some pointers references mumble jumbles probably :(
+					if (ImGui::TreeNode("organismsList", "Organisms")) {
+						for (auto& it : species.at(s)->getOrganisms()) {
+							ImGui::Text("Organism %i: %s, energy: %.0f, fitness: %.0f",
+								it->getID(),
+								it->getAI()->getCurrentBehaviour().c_str(),
+								it->curEnergy,
+								it->fitness
+							);
+						}
 
-			if (!Game::Get()->getEntityManager().
-				GetGroup(Game::groupLabels::OrganismsGroup).empty())
-			{
-				if (ImGui::Button("Clear organisms", ImVec2(100, 20)))
-					Game::Get()->getEnvironment().clearOrganisms();
-			}
+						if (!species.at(s)->getOrganisms().empty()) {
+							if (ImGui::Button("Purge", ImVec2(100, 20))) {
+								for (auto& it : species.at(s)->getOrganisms()) {
+									it->entity->Destroy();
+									species.at(s)->getOrganisms().clear();
+								}
+							}
+						}
 
+						ImGui::TreePop();
+					}
+					if (ImGui::Button("Add Organism", ImVec2(100, 25))){
+						species.at(s)->addOrganism();
+					}
+					ImGui::TreePop();
+				}
+				ImGui::PopID();
+			}
 			ImGui::TreePop();
 		}
 
@@ -59,7 +74,7 @@ void GameGUI::OnImGuiRender()
 		if (ImGui::TreeNode("NutrientList", "Nutrients present: %i", nutrients.size())) {
 			for (int n = 0; n < nutrients.size(); n++) {
 				ImGui::Text("Nutrient instance %.0f", nutrients[n]->
-					GetComponent<Nutrient>().energy);
+					GetComponent<Nutrient>().curEnergy);
 			}
 			ImGui::TreePop();
 		}
@@ -104,23 +119,44 @@ void GameGUI::OnImGuiRender()
 
 		ImGui::SameLine();
 
-
-		if (ImGui::Button("Add organism", ImVec2(150, 25)))
-			Game::Get()->getEnvironment().addOrganismToEnvironment();
+		if (ImGui::Button("Add nutrient", ImVec2(120, 25))) {
+			Game::Get()->getEnvironment().spawnNutrients(10);
+		}
 
 		ImGui::End();
+		// ----- Environment Window|end| ------- //
 	}
-	// ----- Environment window|end| ------- //
-
-	// ----- Simulation window|begin| ------ //
+	
 	{
+		// ----- Simulation Window|begin| ------ //
 		ImGui::Begin("Simulation", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
 		ImGui::Button("Reset", ImVec2(100, 20));
 
 		ImGui::End();
+		// ----- Simulation Window|end| -------- //
 	}
-	// ----- Simulation window|end| -------- //
+	
+	{
+		// ----- Debug Window|begin| --------- //
+		ImGui::Begin("Debug");
+
+		auto& entities = Game::Get()->getEntityManager().GetEntities();
+
+		ImGui::BeginGroup();
+		ImGui::Text("All entities present: %i", entities.size());
+		for (int i = 0; i < entities.size(); i++) {
+			ImGui::PushID(i);
+
+			ImGui::Text("Entity instance");
+
+			ImGui::PopID();
+		}
+		ImGui::EndGroup();
+
+		ImGui::End();
+		// ----- Debug Window|end| --------- //
+	}
 
     imgui->End();
 }
