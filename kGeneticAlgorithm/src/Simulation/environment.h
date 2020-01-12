@@ -13,8 +13,8 @@ public:
 	void addSpeciesToEnvironment(const std::string& name,
 		const std::string& genus, const std::string& epithet);
 
-	// Spawn given amount of food to be randomly
-	// scattered around the environment
+	/* Spawn given amount of food to be randomly
+	scattered around the environment */
 	void spawnNutrients(int amount);
 
 	void clearOrganisms();
@@ -26,7 +26,6 @@ public:
 	Species* getSpecies(std::string name);
 
 private:
-	//! \todo Maybe hold vector of entities instead?
 	std::vector<Species*> speciesInEnvironment;
 };
 

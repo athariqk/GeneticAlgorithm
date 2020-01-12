@@ -8,7 +8,7 @@ public:
 	Genes() {
 		m_DNA = {
 			getRandomValue(10, 100),
-			getRandomValue(1, 10)
+			getRandomValue(1, 3)
 		};
 	}
 

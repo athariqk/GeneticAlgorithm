@@ -40,6 +40,7 @@ std::vector<Species*>& Environment::getAllSpecies()
 	return speciesInEnvironment;
 }
 
+
 void Environment::clearOrganisms() {
 	auto& group(Game::Get()->getEntityManager().
 		GetGroup(Game::groupLabels::OrganismsGroup));

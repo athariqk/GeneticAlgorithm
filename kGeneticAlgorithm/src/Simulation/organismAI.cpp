@@ -12,7 +12,7 @@
 void OrganismAI::OnInit() {
 	behaviourState = BehaviourState::Idling;
 
-	// Get all of the neccesary components
+	/* Get all of the neccesary components */
 	transform = &entity->GetComponent<TransformComponent>();
 	collider = &entity->GetComponent<ColliderComponent>();
 	organism = &entity->GetComponent<OrganismComponent>();
@@ -44,8 +44,11 @@ void OrganismAI::OnUpdate() {
 			runAndTumble();
 			checkForNutrients();
 
-			// Absorb the nutrient if energy is below 70
-			if (isNutrientFound && organism->curEnergy < 70.0f) {
+			/* Absorb the nutrient if energy is below
+			half of the organism's energy capacity */
+			if (isNutrientFound && organism->curEnergy <
+				organism->genome->m_DNA.energyCapacity / 2)
+			{
 				behaviourState = BehaviourState::Absorbing;
 				actTimer = 0;
 			}
@@ -64,12 +67,14 @@ void OrganismAI::OnUpdate() {
 			if (!isNutrientFound) {
 				behaviourState = BehaviourState::RunAndTumble;
 				isAbsorbing = false;
+				caughtNutrient->caught = false;
 				actTimer = 0;
 			}
 
 			if (actTimer > actInterval * 5) {
 				behaviourState = BehaviourState::RunAndTumble;
 				isNutrientFound = false;
+				caughtNutrient->caught = false;
 				isAbsorbing = false;
 				actTimer = 0;
 			}
@@ -104,19 +109,18 @@ void OrganismAI::runAndTumble() {
 }
 
 void OrganismAI::checkForNutrients() {
-	auto& nutrients(Game::Get()->getEntityManager().
-		GetGroup(Game::groupLabels::NutrientsGroup));
+	auto& nutrients(Game::Get()->getEntityManager().GetGroup(Game::groupLabels::NutrientsGroup));
 
 	for (auto& e : nutrients) {
-		if (Collision::AABB(collider->collider,
-			e->GetComponent<ColliderComponent>().collider))
+		if (Collision::AABB(collider->collider, e->GetComponent<ColliderComponent>().collider))
 		{
 			caughtNutrient = &e->GetComponent<Nutrient>();
 			actTimer = 0;
 			isNutrientFound = true;
-			//LOG_TRACE("Organism {} Collider enter {}",
-			//	entity->GetComponent<OrganismComponent>().getID(),
-			//	caughtNutrient->getID());
+			LOG_TRACE("Organism {} Collider hit nutrient {}",
+				entity->GetComponent<OrganismComponent>().getID(),
+				caughtNutrient->getID()
+			);
 		}
 	}
 }
@@ -126,31 +130,20 @@ void OrganismAI::absorbNutrient() {
 		LOG_ERROR("Nutrient is not found while trying to absorb it!");
 		isNutrientFound = false;
 	}
-	else if (caughtNutrient->curEnergy == 0) {
-		isNutrientFound = false;
-		if (caughtNutrient != nullptr) {
-			caughtNutrient = nullptr;
-		}
-	}
 	else {
 		transform->velocity.Zero();
 
-		if (caughtNutrient->curEnergy > 0)
-			organism->curEnergy += absorbSpeed;
+		caughtNutrient->caught = true;
+		caughtNutrient->organismPos = transform->position;
 
-		caughtNutrient->curEnergy -= absorbSpeed;
+		if (organism->curEnergy < organism->genome->m_DNA.energyCapacity) {
+			if (caughtNutrient->curEnergy > 0)
+				organism->curEnergy += absorbSpeed;
 
-		// Increase the fitness each time it succesfully
-		// absorbs nutrients
-		organism->fitness += 0.05f;
+			caughtNutrient->curEnergy -= absorbSpeed;
 
-		// Clear the caught nutrient if its energy is depleted
-		if (caughtNutrient->curEnergy == 0) {
-			isNutrientFound = false;
-
-			if (caughtNutrient != nullptr) {
-				caughtNutrient = nullptr;
-			}
+			/* Increase the fitness while absorbing nutrients */
+			organism->fitness += 0.05f;
 		}
 	}
 }
@@ -159,8 +152,8 @@ std::string OrganismAI::getCurrentBehaviour() {
 	std::string result;
 
 	if (behaviourState == BehaviourState::Idling) {
-		// This is because the idle state currently
-		// just only changes the direction
+		/* This is because the idle state currently
+		just only changes the direction */
 		result = "Run & Tumble";
 	}
 	if (behaviourState == BehaviourState::RunAndTumble) {

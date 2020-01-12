@@ -21,7 +21,7 @@ void GameGUI::OnImGuiRender()
     imgui->Begin(Game::Get()->_SDLWindow);
 
 	{
-		// ----- Environment Window|begin| ------- //
+		/* ----- Environment Window|begin| ------- */
 		ImGui::Begin("Environment", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
 		auto species = Game::Get()->getEnvironment().getAllSpecies();
@@ -30,36 +30,34 @@ void GameGUI::OnImGuiRender()
 			for (int s = 0; s < species.size(); s++) {
 				ImGui::PushID(s);
 
-				if (ImGui::TreeNode("specificSpecies", "%s %i",
-					species.at(s)->getFormattedName(false).c_str(),
-					species.at(s)->getPopulationCount()))
+				if (ImGui::TreeNode("specificSpecies", "%s, Pop: %i",
+					species[s]->getFormattedName(false).c_str(),
+					species[s]->getPopulationCount()))
 				{
-					//! \brief The organisms vector in the species class
-					//! is not synchronized with the one that the entity
-					//! system holds because obviously its seperated, and
-					//! some pointers references mumble jumbles probably :(
 					if (ImGui::TreeNode("organismsList", "Organisms")) {
-						for (auto& it : species.at(s)->getOrganisms()) {
-							ImGui::Text("Organism %i: %s, energy: %.0f, fitness: %.0f",
+						ImGui::ListBoxHeader("", ImVec2(400, 150));
+						for (auto& it : species[s]->organisms) {
+							ImGui::Text("Organism %i: %s, energy: %.0f/%.0f, fitness: %.0f",
 								it->getID(),
-								it->getAI()->getCurrentBehaviour().c_str(),
+								it->ai->getCurrentBehaviour().c_str(),
 								it->curEnergy,
+								it->genome->m_DNA.energyCapacity,
 								it->fitness
 							);
 						}
+						ImGui::ListBoxFooter();
 
-						if (!species.at(s)->getOrganisms().empty()) {
+						if (!species[s]->organisms.empty()) {
 							if (ImGui::Button("Purge", ImVec2(100, 20))) {
-								for (auto& it : species.at(s)->getOrganisms()) {
-									it->entity->Destroy();
-									species.at(s)->getOrganisms().clear();
+								for (auto& it : species[s]->organisms) {
+									species[s]->deleteOrganism(it);
 								}
 							}
 						}
 
 						ImGui::TreePop();
 					}
-					if (ImGui::Button("Add Organism", ImVec2(100, 25))){
+					if (ImGui::Button("Add Organism", ImVec2(100, 25))) {
 						species.at(s)->addOrganism();
 					}
 					ImGui::TreePop();
@@ -69,9 +67,8 @@ void GameGUI::OnImGuiRender()
 			ImGui::TreePop();
 		}
 
-		auto& nutrients(Game::Get()->getEntityManager().GetGroup(
-			Game::groupLabels::NutrientsGroup));
-		if (ImGui::TreeNode("NutrientList", "Nutrients present: %i", nutrients.size())) {
+		auto& nutrients(Game::Get()->getEntityManager().GetGroup(Game::groupLabels::NutrientsGroup));
+		if (ImGui::TreeNode("NutrientList", "Nutrients available: %i", nutrients.size())) {
 			for (int n = 0; n < nutrients.size(); n++) {
 				ImGui::Text("Nutrient instance %.0f", nutrients[n]->
 					GetComponent<Nutrient>().curEnergy);
@@ -84,7 +81,7 @@ void GameGUI::OnImGuiRender()
 		if (ImGui::Button("Add species", ImVec2(120, 25)))
 			ImGui::OpenPopup("Create a new species");
 
-		// ----- Create new species modal|begin| ------- //
+		/* ----- Create new species modal|begin| ------- */
 		{
 			if (ImGui::BeginPopupModal("Create a new species", NULL,
 				ImGuiWindowFlags_AlwaysAutoResize))
@@ -93,7 +90,7 @@ void GameGUI::OnImGuiRender()
 				ImGui::InputText("Genus", &sGenus);
 				ImGui::InputText("Epithet", &sEpithet);
 				ImGui::Separator();
-				if (ImGui::Button("Create", ImVec2(100, 20))) {
+				if (ImGui::Button("Create", ImVec2(80, 25))) {
 					if (sGenus.empty() || sEpithet.empty()) {
 						LOG_ERROR("Genus or epithet is not valid!");
 					}
@@ -106,7 +103,11 @@ void GameGUI::OnImGuiRender()
 					}
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Cancel", ImVec2(100, 20))) {
+				if (ImGui::Button("Random", ImVec2(80, 25))) {
+
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel", ImVec2(80, 25))) {
 					ImGui::CloseCurrentPopup();
 					sGenus.clear();
 					sEpithet.clear();
@@ -115,7 +116,7 @@ void GameGUI::OnImGuiRender()
 				ImGui::EndPopup();
 			}
 		}
-		// ----- Create new species popup|end| ------- //
+		/* ----- Create new species popup|end| ------- */
 
 		ImGui::SameLine();
 
@@ -124,21 +125,21 @@ void GameGUI::OnImGuiRender()
 		}
 
 		ImGui::End();
-		// ----- Environment Window|end| ------- //
+		/* ----- Environment Window|end| ------- */
 	}
 	
 	{
-		// ----- Simulation Window|begin| ------ //
+		/* ----- Simulation Window|begin| ------ */
 		ImGui::Begin("Simulation", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
 		ImGui::Button("Reset", ImVec2(100, 20));
 
 		ImGui::End();
-		// ----- Simulation Window|end| -------- //
+		/* ----- Simulation Window|end| -------- */
 	}
 	
 	{
-		// ----- Debug Window|begin| --------- //
+		/* ----- Debug Window|begin| --------- */
 		ImGui::Begin("Debug");
 
 		auto& entities = Game::Get()->getEntityManager().GetEntities();
@@ -155,7 +156,7 @@ void GameGUI::OnImGuiRender()
 		ImGui::EndGroup();
 
 		ImGui::End();
-		// ----- Debug Window|end| --------- //
+		/* ----- Debug Window|end| --------- */
 	}
 
     imgui->End();

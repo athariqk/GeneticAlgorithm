@@ -16,21 +16,40 @@ Species::Species(const std::string& name, const std::string& genus,
 void Species::addOrganism()
 {
 	auto& instance(Game::Get()->getEntityManager().AddEntity());
-	instance.AddComponent<OrganismComponent>(&genes);
+	instance.AddComponent<OrganismComponent>(this);
 	organisms.push_back(&instance.GetComponent<OrganismComponent>());
 
-	LOG_INFO("Added organism of species {}, Population: {}",
-		getFormattedName(false), getPopulationCount());
+	LOG_INFO("Added organism of species {}, Population: {} with following traits: energy {}, speed {}",
+		getFormattedName(false), getPopulationCount(),
+		organisms.back()->genome->m_DNA.energyCapacity,
+		organisms.back()->genome->m_DNA.speed);
 }
 
-size_t Species::getPopulationCount() const
+void Species::deleteOrganism(OrganismComponent* organism)
 {
+	for (auto& it : organisms) {
+		if (it == organism) {
+			it->entity->Destroy();
+			organisms.erase(organisms.begin() + getOrganismIndex(organism));
+		}
+	}
+}
+
+int Species::getOrganismIndex(OrganismComponent* organism) {
+	std::vector<OrganismComponent*>::iterator it =
+		std::find(organisms.begin(), organisms.end(), organism);
+
+	if (it != organisms.end()) {
+		return std::distance(organisms.begin(), it);
+	}
+	else {
+		LOG_ERROR("Index of organism {} is not found!", organism->getID());
+		return NULL;
+	}
+}
+
+size_t Species::getPopulationCount() {
 	return organisms.size();
-}
-
-std::vector<OrganismComponent*>& Species::getOrganisms()
-{
-	return organisms;
 }
 
 std::string Species::getFormattedName(bool identifier)

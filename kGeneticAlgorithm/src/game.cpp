@@ -14,7 +14,6 @@ EntityManager	entityManager;
 GameGUI			gui;
 Environment		env;
 SDL_GLContext	gl_context;
-// ----------------------------------------------- //
 Game*			Game::staticInstance	= nullptr;
 SDL_Renderer*	Game::_SDLRenderer		= nullptr;
 SDL_Window*		Game::_SDLWindow		= nullptr;
@@ -97,6 +96,8 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 	env.spawnNutrients(30);
 
 	env.addSpeciesToEnvironment("Primum", "Primus", "specius");
+
+	env.getSpecies("Primum")->addOrganism();
 }
 
 void Game::HandleEvents()
@@ -123,7 +124,8 @@ void Game::Update()
 
 void Game::Render()
 {
-	GPU_ClearRGBA(screen, 0, 0, 0, 255);
+	/* Solid background color */
+	GPU_ClearRGBA(screen, 70, 130, 180, 255);
 
 	entityManager.Draw();
 

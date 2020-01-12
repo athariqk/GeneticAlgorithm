@@ -56,7 +56,9 @@ public:
 
 	void OnUpdate() override
     {
-        position.x += static_cast<int>(velocity.x * speed) - Game::camera.x;
+		/* Kind of a hackish way to move the camera
+		( object position.axis - camera.axis ) might need to redo this properly */
+        position.x += static_cast<int>(velocity.x * speed) - Game::camera.x; 
 		position.y += static_cast<int>(velocity.y * speed) - Game::camera.y;
     }
 

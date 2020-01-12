@@ -18,32 +18,23 @@ public:
 	~Species() {}
 
 	void addOrganism();
-
-	size_t getPopulationCount() const;
-
+	void deleteOrganism(OrganismComponent* organism);
 	size_t getID();
-
+	size_t getPopulationCount();
+	int getOrganismIndex(OrganismComponent* organism);
 	std::string getFormattedName(bool identifier);
-
-	std::vector<OrganismComponent*>& getOrganisms();
+	std::vector<OrganismComponent*> organisms;
 
 	int age;
-	double averageFitness;
-	double maxFitness;
-	double maxFitnessEver;
 
 	std::string name;
 	std::string genus;
 	std::string epithet;
 
 	Genes genes;
-
 	int32_t generation;
 
 private:
-	//! \todo Maybe hold vector of entities instead?
-	std::vector<OrganismComponent*> organisms;
-
 	size_t id;
 };
 
