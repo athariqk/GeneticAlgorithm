@@ -1,20 +1,28 @@
 #pragma once
 
+#include <SDL.h>
+
 #include <random>
 #include <stdint.h>
 
 class Genes {
 public:
 	Genes() {
-		m_DNA = {
-			getRandomValue(10, 100),
-			getRandomValue(1, 3)
+		m_DNA.energyCapacity = getRandomValue(10, 100);
+		m_DNA.speed = getRandomValue(1, 3);
+		m_DNA.membraneColour = {
+			(Uint8)getRandomValue(1, 255),
+			(Uint8)getRandomValue(1,255),
+			(Uint8)getRandomValue(1,255),
+			150
 		};
 	}
 
 	// Traits of the organism
 	struct DNA {
-		float energyCapacity, speed;
+		float energyCapacity;
+		float speed;
+		SDL_Color membraneColour;
 	};
 
 	DNA m_DNA;

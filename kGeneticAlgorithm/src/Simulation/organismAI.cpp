@@ -92,8 +92,8 @@ Vector2D& OrganismAI::getRandomDirection() {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> dis(
-		-5,
-		5);
+		-2,
+		2);
 
 	direction.x = dis(gen);
 	direction.y = dis(gen);

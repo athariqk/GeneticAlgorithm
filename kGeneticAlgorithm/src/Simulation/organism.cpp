@@ -10,8 +10,11 @@ void OrganismComponent::OnInit()
 	collider = &entity->AddComponent<ColliderComponent>("organism");
 	ai = &entity->AddComponent<OrganismAI>(genome->m_DNA.speed, 50);
 
+	membraneColour = genome->m_DNA.membraneColour;
 	curEnergy = genome->m_DNA.energyCapacity;
 	fitness = 0;
+
+	LOG_TRACE("{}, {}, {}", membraneColour.r, membraneColour.g, membraneColour.b);
 }
 
 void OrganismComponent::OnUpdate() {
@@ -36,8 +39,8 @@ void OrganismComponent::OnUpdate() {
 
 void OrganismComponent::OnDraw()
 {
-	circleShape.DrawCircle(transform->position.x,
-		transform->position.y, transform->width, true, true);
+	circleShape.DrawCircle(transform->position.x, transform->position.y,
+		transform->width, membraneColour, true, true);
 }
 
 std::string OrganismComponent::getSpeciesName()

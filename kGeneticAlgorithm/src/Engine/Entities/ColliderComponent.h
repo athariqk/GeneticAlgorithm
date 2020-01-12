@@ -35,7 +35,7 @@ public:
 
 	void OnDraw() override {
 		if (debug) {
-			colShape.DrawCircle(collider.x, collider.y, collider.w);
+			colShape.DrawCircle(collider.x, collider.y, collider.w, { 255, 255, 255, 255 });
 		}
 	}
 

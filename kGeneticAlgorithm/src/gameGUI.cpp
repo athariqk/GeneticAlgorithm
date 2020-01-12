@@ -76,6 +76,13 @@ void GameGUI::OnImGuiRender()
 			ImGui::TreePop();
 		}
 
+		static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+
+		if (ImGui::TreeNode("Background Color")) {
+			ImGui::ColorEdit4("BGColor", (float*)& color);
+			ImGui::TreePop();
+		}
+
 		ImGui::Separator();
 
 		if (ImGui::Button("Add species", ImVec2(120, 25)))

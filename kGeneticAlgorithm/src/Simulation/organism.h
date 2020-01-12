@@ -44,11 +44,13 @@ public:
 	float curEnergy;
 
 private:
-	// Components
+	/* Components */
 	PrimitiveShape circleShape;
 	ColliderComponent* collider;
 	TransformComponent* transform;
 	SpriteComponent* sprite;
 
 	size_t id = 0;
+
+	SDL_Color membraneColour;
 };
