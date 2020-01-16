@@ -13,16 +13,51 @@ Species::Species(const std::string& name, const std::string& genus,
 	epithet(epithet)
 {}
 
+void Species::OnUpdate() {
+	if (organisms.empty()) {
+		Game::Get()->getEnvironment().makeExtinct(this);
+	}
+}
+
 void Species::addOrganism()
 {
 	auto& instance(Game::Get()->getEntityManager().AddEntity());
 	instance.AddComponent<OrganismComponent>(this);
 	organisms.push_back(&instance.GetComponent<OrganismComponent>());
 
-	LOG_INFO("Added organism of species {}, Population: {} with following traits: energy {}, speed {}",
-		getFormattedName(false), getPopulationCount(),
-		organisms.back()->genome->m_DNA.energyCapacity,
-		organisms.back()->genome->m_DNA.speed);
+	auto& organism = instance.GetComponent<OrganismComponent>();
+
+	LOG_INFO("Added organism of species {}, ID: {} with following "
+		"traits:\n energy cap {}, speed {}, size {}, aggresiveness {}",
+		getFormattedName(false), organism.getID(),
+		organism.genome.energyCapacity,
+		organism.genome.speed,
+		organism.genome.size,
+		organism.genome.aggresiveness);
+}
+
+void Species::addOrganism(Genes& genes, bool mutate) {
+	auto& instance(Game::Get()->getEntityManager().AddEntity());
+	instance.AddComponent<OrganismComponent>(this, genes);
+	organisms.push_back(&instance.GetComponent<OrganismComponent>());
+
+	auto& organism = instance.GetComponent<OrganismComponent>();
+
+	// Do random mutations
+	if (mutate) {
+		if (organism.genome.mutate(5, 1)) {
+			LOG_INFO("Mutation occured on organism {}",
+				organism.getID());
+		}
+	}
+
+	LOG_INFO("Added organism of species {}, ID: {} with following "
+		"traits:\n energy cap {}, speed {}, size {}, aggresiveness {}",
+		getFormattedName(false), organism.getID(),
+		organism.genome.energyCapacity,
+		organism.genome.speed,
+		organism.genome.size,
+		organism.genome.aggresiveness);
 }
 
 void Species::deleteOrganism(OrganismComponent* organism)
@@ -32,6 +67,16 @@ void Species::deleteOrganism(OrganismComponent* organism)
 			it->entity->Destroy();
 			organisms.erase(organisms.begin() + getOrganismIndex(organism));
 		}
+	}
+}
+
+void Species::clearOrganisms() {
+	/* Proceed if not empty */
+	if (!organisms.empty()) {
+		for (auto& it : organisms)
+			it->entity->Destroy();
+
+		organisms.clear();
 	}
 }
 

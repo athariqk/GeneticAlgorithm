@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
 
 	Game* game = new Game();
 
-	game->Init("Genetic Algorithm Test", WINDOW_WIDTH, WINDOW_HEIGHT, false);
+	game->Init("kGeneticAlgorithm", WINDOW_WIDTH, WINDOW_HEIGHT, false);
 
 	while (Game::Get()->running()) {
 		frameStart = SDL_GetTicks();

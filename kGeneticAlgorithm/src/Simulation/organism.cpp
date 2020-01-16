@@ -1,4 +1,6 @@
 #include "organism.h"
+#include "game.h"
+#include "gameGUI.h"
 
 void OrganismComponent::OnInit()
 {
@@ -6,15 +8,15 @@ void OrganismComponent::OnInit()
 
 	// Add all of the neccesary components
 	transform = &entity->AddComponent<TransformComponent>
-		(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10, 10, 10, 5);
+		(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10,
+			genome.size, genome.size, genome.size);
+
 	collider = &entity->AddComponent<ColliderComponent>("organism");
-	ai = &entity->AddComponent<OrganismAI>(genome->m_DNA.speed, 50);
+	ai = &entity->AddComponent<OrganismAI>(genome.speed, 50);
 
-	membraneColour = genome->m_DNA.membraneColour;
-	curEnergy = genome->m_DNA.energyCapacity;
+	membraneColour = genome.membraneColour;
+	curEnergy = genome.energyCapacity;
 	fitness = 0;
-
-	LOG_TRACE("{}, {}, {}", membraneColour.r, membraneColour.g, membraneColour.b);
 }
 
 void OrganismComponent::OnUpdate() {
@@ -31,9 +33,16 @@ void OrganismComponent::OnUpdate() {
 	if (fitness < 0)
 		fitness = 0;
 
-	if (curEnergy > genome->m_DNA.energyCapacity || fitness > 100) {
-		curEnergy = genome->m_DNA.energyCapacity;
+	if (curEnergy > genome.energyCapacity || fitness > 100) {
+		curEnergy = genome.energyCapacity;
 		fitness = 100;
+	}
+
+	if (Game::Get()->getGUI().debugMode) {
+		collider->debug = true;
+	}
+	else {
+		collider->debug = false;
 	}
 }
 

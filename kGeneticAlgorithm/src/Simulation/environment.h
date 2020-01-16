@@ -13,17 +13,22 @@ public:
 	void addSpeciesToEnvironment(const std::string& name,
 		const std::string& genus, const std::string& epithet);
 
-	/* Spawn given amount of food to be randomly
-	scattered around the environment */
+	//! \brief Spawn given amount of food to be randomly
+	//! scattered around the environment
 	void spawnNutrients(int amount);
 
-	void clearOrganisms();
+	//! \brief Make this species cease to exist
+	void makeExtinct(Species* species);
 
 	std::vector<Species*>& getAllSpecies();
 
+	//! \brief Returns species by object
 	Species* getSpecies(const Species* species);
 
+	//! \brief Returns species by its name (identifier)
 	Species* getSpecies(std::string name);
+
+	int getSpeciesIndex(Species* species);
 
 private:
 	std::vector<Species*> speciesInEnvironment;

@@ -8,3 +8,7 @@
 #include <vector>
 #include <stdint.h>
 
+class Evolution {
+public:
+
+};

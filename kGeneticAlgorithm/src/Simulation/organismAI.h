@@ -1,20 +1,23 @@
 #pragma once
-#include "Entities/EntitySystem.h"
+#include "Components/EntitySystem.h"
 #include "Vector2D.h"
 
 #include "nutrient.h"
 
 /**
- * Simple predefined AI for the organisms
+ * Simple predefined "dumb" AI for the organisms
  * neural network could be used later instead
 */
 enum BehaviourState {
 	Idling = 0,
 	RunAndTumble = 1,
-	Absorbing = 2
+	Absorbing = 2,
+	Evaluate = 3
 };
 
 class OrganismComponent;
+
+class Genes;
 
 class OrganismAI : public Component {
 public:
@@ -28,6 +31,7 @@ public:
 	void runAndTumble();
 	void absorbNutrient();
 	void checkForNutrients();
+	void reproduce(Genes* genes);
 
 	Vector2D& getRandomDirection();
 
@@ -49,8 +53,10 @@ private:
 	float actInterval = 10;
 	float movingInterval = 10;
 	float actTimer = 0;
+	float reproduceInterval = 0;
 
 	bool isNutrientFound = false;
 	bool hasMoved = false;
 	bool isAbsorbing = false;
+	bool reproduced = false;
 };

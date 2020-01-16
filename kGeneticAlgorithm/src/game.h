@@ -1,7 +1,8 @@
 #pragma once
 #include "config.h"
 
-#include "Entities/EntitySystem.h"
+#include "Components/EntitySystem.h"
+#include "Window.h"
 
 #include <SDL.h>
 #include <SDL_gpu.h>
@@ -11,6 +12,8 @@
 #include <string>
 
 class Environment;
+
+class GameGUI;
 
 class Game {
 public:
@@ -27,17 +30,13 @@ public:
 
 	static Game* Get();
 
+	Window& getWindow();
 	EntityManager& getEntityManager();
-
 	Environment& getEnvironment();
+	GameGUI& getGUI();
 
-	SDL_GLContext& getGLContext();
-
-	static SDL_Renderer* _SDLRenderer;
-	static SDL_Window* _SDLWindow;
-	static GPU_Target* screen;
-	static SDL_Event m_event;
 	static GPU_Rect camera;
+	static SDL_Event m_event;
 
 	enum groupLabels : std::size_t {
 		NutrientsGroup,
@@ -50,4 +49,6 @@ private:
 	bool m_running = false;
 
 	static Game* staticInstance;
+
+	Window* mainWindow;
 };

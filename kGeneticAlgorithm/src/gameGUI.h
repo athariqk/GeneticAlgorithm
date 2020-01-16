@@ -1,5 +1,5 @@
 #pragma once
-#include "Entities/Components.h"
+#include "Components/Components.h"
 
 #include "ImGui/ImGuiLayer.h"
 
@@ -12,6 +12,8 @@ public:
     void OnImGuiRender();
     void OnImGuiEvent();
     void OnImGuiClear();
+
+	bool debugMode = false;
 
 private:
     ImGuiLayer* imgui;

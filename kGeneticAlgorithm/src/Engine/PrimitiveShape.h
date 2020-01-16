@@ -12,20 +12,20 @@ public:
 	{
 		if (filled) {
 			if (edge)
-				GPU_CircleFilled(Game::screen, posX, posY, radius + 2,
+				GPU_CircleFilled(Game::Get()->getWindow().GetTarget(), posX, posY, radius + 2,
 					membraneColour);
 
-			GPU_CircleFilled(Game::screen, posX, posY, radius,
+			GPU_CircleFilled(Game::Get()->getWindow().GetTarget(), posX, posY, radius,
 				SDL_Color{ 255, 255, 255, 150 });
 		}
 		else {
-			GPU_Circle(Game::screen, posX, posY, radius,
+			GPU_Circle(Game::Get()->getWindow().GetTarget(), posX, posY, radius,
 				SDL_Color{ 255, 255, 255, 255 });
 		}
 	}
 
 	void DrawRectangle(float posX, float posY, float size) {
-		GPU_Rectangle(Game::screen, 10, 10,
+		GPU_Rectangle(Game::Get()->getWindow().GetTarget(), 10, 10,
 			40, 60, SDL_Color{ 255, 255, 255 });
 	}
 };

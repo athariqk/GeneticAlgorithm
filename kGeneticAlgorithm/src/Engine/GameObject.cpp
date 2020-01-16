@@ -30,5 +30,5 @@ void GameObject::Update() {
 }
 
 void GameObject::Render() {
-    GPU_Blit(objtexture, &srcRect, Game::screen, destRect.x, destRect.y);
+    GPU_Blit(objtexture, &srcRect, Game::Get()->getWindow().GetTarget(), destRect.x, destRect.y);
 }

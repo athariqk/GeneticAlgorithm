@@ -8,7 +8,8 @@
 #include "misc/cpp/imgui_stdlib.h"
 
 void GameGUI::OnInit(){
-    imgui = new ImGuiLayer(Game::Get()->_SDLWindow, Game::Get()->getGLContext());
+    imgui = new ImGuiLayer(Game::Get()->getWindow().GetWindow(),
+		Game::Get()->getWindow().GetGLContext());
 }
 
 void GameGUI::OnImGuiEvent()
@@ -18,7 +19,7 @@ void GameGUI::OnImGuiEvent()
 
 void GameGUI::OnImGuiRender()
 {
-    imgui->Begin(Game::Get()->_SDLWindow);
+    imgui->Begin(Game::Get()->getWindow().GetWindow());
 
 	{
 		/* ----- Environment Window|begin| ------- */
@@ -35,31 +36,41 @@ void GameGUI::OnImGuiRender()
 					species[s]->getPopulationCount()))
 				{
 					if (ImGui::TreeNode("organismsList", "Organisms")) {
-						ImGui::ListBoxHeader("", ImVec2(400, 150));
-						for (auto& it : species[s]->organisms) {
-							ImGui::Text("Organism %i: %s, energy: %.0f/%.0f, fitness: %.0f",
-								it->getID(),
-								it->ai->getCurrentBehaviour().c_str(),
-								it->curEnergy,
-								it->genome->m_DNA.energyCapacity,
-								it->fitness
-							);
-						}
-						ImGui::ListBoxFooter();
-
-						if (!species[s]->organisms.empty()) {
-							if (ImGui::Button("Purge", ImVec2(100, 20))) {
-								for (auto& it : species[s]->organisms) {
-									species[s]->deleteOrganism(it);
-								}
+						for (int i = 0; i < species[s]->organisms.size(); i++) {
+							ImGui::PushID(i);
+							auto organism = species[s]->organisms[i];
+							if (ImGui::TreeNode("individuals", "Organism %i", organism->getID())) {
+								ImGui::Text("Behaviour: %s\nEnergy: %.0f/%.0f\nSpeed: %f\nSize: %f\nAggresiveness: "
+									"%f\nMembraneColour.r: %i\nMembraneColour.g: %i\nMembraneColour.rb: %i\nFitness: %.0f",
+									organism->ai->getCurrentBehaviour().c_str(),
+									organism->curEnergy,
+									organism->genome.energyCapacity,
+									organism->genome.speed,
+									organism->genome.size,
+									organism->genome.aggresiveness,
+									organism->genome.membraneColour.r,
+									organism->genome.membraneColour.g,
+									organism->genome.membraneColour.b,
+									organism->fitness
+								);
+								ImGui::TreePop();
 							}
+							ImGui::PopID();
 						}
-
 						ImGui::TreePop();
 					}
+
 					if (ImGui::Button("Add Organism", ImVec2(100, 25))) {
-						species.at(s)->addOrganism();
+						species[s]->addOrganism();
 					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Extirpate", ImVec2(100, 25))) {
+						Game::Get()->getEnvironment().
+							makeExtinct(species[s]);
+					}
+
 					ImGui::TreePop();
 				}
 				ImGui::PopID();
@@ -127,7 +138,7 @@ void GameGUI::OnImGuiRender()
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Add nutrient", ImVec2(120, 25))) {
+		if (ImGui::Button("Add nutrients", ImVec2(120, 25))) {
 			Game::Get()->getEnvironment().spawnNutrients(10);
 		}
 
@@ -151,17 +162,19 @@ void GameGUI::OnImGuiRender()
 
 		auto& entities = Game::Get()->getEntityManager().GetEntities();
 
-		ImGui::BeginGroup();
-		ImGui::Text("All entities present: %i", entities.size());
-		for (int i = 0; i < entities.size(); i++) {
-			ImGui::PushID(i);
+		ImGui::Checkbox("Debug mode", &debugMode);
 
-			ImGui::Text("Entity instance");
+		if (ImGui::TreeNode("entitiesList", "All entities present: %i", entities.size())) {
+			for (int i = 0; i < entities.size(); i++) {
+				ImGui::PushID(i);
 
-			ImGui::PopID();
+				ImGui::Text("Entity instance");
+
+				ImGui::PopID();
+			}
+			ImGui::TreePop();
 		}
-		ImGui::EndGroup();
-
+		
 		ImGui::End();
 		/* ----- Debug Window|end| --------- */
 	}

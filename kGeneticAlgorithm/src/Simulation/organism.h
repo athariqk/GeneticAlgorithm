@@ -3,7 +3,7 @@
 #include "species.h"
 #include "organismAI.h"
 
-#include "Entities/Components.h"
+#include "Components/Components.h"
 #include "PrimitiveShape.h"
 #include "Collision.h"
 
@@ -18,8 +18,12 @@ public:
 	OrganismComponent(Species* m_species) :
 		species(m_species)
 	{
-		genome = &m_species->genes;
+		genome = m_species->genes;
 	}
+
+	OrganismComponent(Species* m_species, Genes& genes) :
+		species(m_species), genome(genes)
+	{}
 
 	OrganismComponent(const OrganismComponent& organism)
 		: species(organism.species) {}
@@ -32,12 +36,12 @@ public:
 
 	Species* species;
 	OrganismAI* ai;
-	Genes* genome;
+	Genes genome;
 	double fitness;
 
 	std::string getSpeciesName();
 
-	//! \todo Implement real ID counting
+	//! \todo Implement proper ID counting
 	//! instead of just random numbers
 	size_t getID();
 

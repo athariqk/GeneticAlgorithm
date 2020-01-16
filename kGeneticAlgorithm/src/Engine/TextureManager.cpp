@@ -16,5 +16,6 @@ GPU_Image* TextureManager::LoadTexture(const char* texture) {
 
 void TextureManager::Draw(GPU_Image* tex, GPU_Rect* src, GPU_Rect* dest)
 {
-    GPU_BlitScale(tex, src, Game::screen, dest->x, dest->y, dest->w, dest->h);
+    GPU_BlitScale(tex, src, Game::Get()->getWindow().
+		GetTarget(), dest->x, dest->y, dest->w, dest->h);
 }

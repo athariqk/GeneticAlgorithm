@@ -7,22 +7,16 @@
 #include "gameGUI.h"
 
 #include "Vector2D.h"
-#include "Entities/Components.h"
+#include "Components/Components.h"
 
-// ------------ Declare tons of stuff ------------ //
 EntityManager	entityManager;
 GameGUI			gui;
 Environment		env;
-SDL_GLContext	gl_context;
 Game*			Game::staticInstance	= nullptr;
-SDL_Renderer*	Game::_SDLRenderer		= nullptr;
-SDL_Window*		Game::_SDLWindow		= nullptr;
-GPU_Target*		Game::screen			= nullptr;
-//! \note There is a method in sdl-gpu for camera "GPU_Camera"
-//! maybe that could be used instead?
-GPU_Rect		Game::camera			= { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 SDL_Event		Game::m_event;
-// ----------------------------------------------- //
+// There is a method in SDL-GPU for a camera
+// (GPU_Camera), maybe this could be used instead?
+GPU_Rect		Game::camera			= { 0,0, WINDOW_WIDTH, WINDOW_HEIGHT };
 
 Game::Game()
 {
@@ -41,34 +35,7 @@ Game* Game::Get()
 
 void Game::Init(const char* title, int width, int height, bool fullscreen)
 {
-	int flags = 0;
-
-	if (fullscreen) {
-		flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
-	}
-
-	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
-		LOG_INFO("SDL Subsystems initialized");
-
-		screen = GPU_Init(WINDOW_WIDTH, WINDOW_HEIGHT, GPU_DEFAULT_INIT_FLAGS);
-
-		if (screen == NULL) {
-			LOG_ERROR("Failed to initialize SDL_gpu!");
-			return;
-		}
-
-		_SDLWindow = SDL_GetWindowFromID(screen->context->windowID);
-		gl_context = screen->context->context;
-
-		if (_SDLWindow) {
-			LOG_INFO("SDL Window created, resolution: {} x {}", width, height);
-		}
-	}
-	else {
-		m_running = false;
-		LOG_ERROR("Failed to initialize SDL");
-		return;
-	}
+	mainWindow = new Window(title, width, height, fullscreen);
 
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 		m_running = false;
@@ -84,6 +51,8 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 	LOG_INFO("Vendor: {}", glGetString(GL_VENDOR));
 	LOG_INFO("Renderer: {}", glGetString(GL_RENDERER));
 
+	LOG_TRACE("----- End of system informations -----");
+
 	// Start the game loop
 	m_running = true;
 
@@ -95,9 +64,8 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 
 	env.spawnNutrients(30);
 
+	/* Initial species */
 	env.addSpeciesToEnvironment("Primum", "Primus", "specius");
-
-	env.getSpecies("Primum")->addOrganism();
 }
 
 void Game::HandleEvents()
@@ -111,6 +79,17 @@ void Game::HandleEvents()
 	case SDL_QUIT:
 		m_running = false;
 		break;
+	case SDL_WINDOWEVENT:
+		switch (m_event.window.event) {
+		case SDL_WINDOWEVENT_RESIZED:
+			GPU_SetWindowResolution(m_event.window.data1,
+				m_event.window.data2);
+			LOG_INFO("Window resolution changed: {} x {}",
+				m_event.window.data1, m_event.window.data2);
+			break;
+		default:
+			break;
+		}
 	default:
 		break;
 	}
@@ -125,7 +104,7 @@ void Game::Update()
 void Game::Render()
 {
 	/* Solid background color */
-	GPU_ClearRGBA(screen, 70, 130, 180, 255);
+	GPU_ClearRGBA(mainWindow->GetTarget(), 70, 130, 180, 255);
 
 	entityManager.Draw();
 
@@ -133,8 +112,14 @@ void Game::Render()
 
 	gui.OnImGuiRender();
 
-	SDL_GL_MakeCurrent(_SDLWindow, gl_context);
-	GPU_Flip(screen);
+	SDL_GL_MakeCurrent(mainWindow->GetWindow(),
+		mainWindow->GetGLContext());
+
+	GPU_Flip(mainWindow->GetTarget());
+}
+
+Window& Game::getWindow() {
+	return *mainWindow;
 }
 
 EntityManager& Game::getEntityManager()
@@ -146,14 +131,15 @@ Environment& Game::getEnvironment() {
 	return env;
 }
 
-SDL_GLContext& Game::getGLContext() {
-	return gl_context;
+GameGUI& Game::getGUI() {
+	return gui;
 }
 
 void Game::Clean()
 {
 	gui.OnImGuiClear();
 	entityManager.Clear();
+	delete(mainWindow);
 
 	GPU_Quit();
 	SDL_Quit();

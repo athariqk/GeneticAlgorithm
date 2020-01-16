@@ -1,5 +1,6 @@
 #include "organismAI.h"
 #include "organism.h"
+#include "genes.h"
 #include "game.h"
 
 #include "Simulation/environment.h"
@@ -28,6 +29,12 @@ void OrganismAI::OnInit() {
 
 void OrganismAI::OnUpdate() {
 	if (runAI) {
+		if (organism->curEnergy > organism->
+			genome.energyCapacity / 2)
+		{
+			reproduceInterval += 0.1f /* Reproduction rate */;
+		}
+
 		switch (behaviourState) {
 		case BehaviourState::Idling:
 			hasMoved = false;
@@ -47,7 +54,7 @@ void OrganismAI::OnUpdate() {
 			/* Absorb the nutrient if energy is below
 			half of the organism's energy capacity */
 			if (isNutrientFound && organism->curEnergy <
-				organism->genome->m_DNA.energyCapacity / 2)
+				organism->genome.energyCapacity / 2)
 			{
 				behaviourState = BehaviourState::Absorbing;
 				actTimer = 0;
@@ -65,18 +72,42 @@ void OrganismAI::OnUpdate() {
 			actTimer++;
 
 			if (!isNutrientFound) {
-				behaviourState = BehaviourState::RunAndTumble;
 				isAbsorbing = false;
 				caughtNutrient->caught = false;
 				actTimer = 0;
+				behaviourState = BehaviourState::RunAndTumble;
 			}
 
 			if (actTimer > actInterval * 5) {
-				behaviourState = BehaviourState::RunAndTumble;
 				isNutrientFound = false;
 				caughtNutrient->caught = false;
 				isAbsorbing = false;
 				actTimer = 0;
+				behaviourState = BehaviourState::Evaluate;
+			}
+			break;
+
+		case BehaviourState::Evaluate:
+			actTimer++;
+			transform->velocity.Zero();
+
+			if (organism->curEnergy > organism->genome.
+				energyCapacity / 2 && reproduceInterval > 100)
+			{
+				if (reproduced)
+					reproduced = false;
+
+				reproduce(&organism->genome);
+			}
+			else {
+				actTimer = 0;
+				behaviourState = BehaviourState::RunAndTumble;
+			}
+
+			if (actTimer > actInterval * 2)
+			{
+				actTimer = 0;
+				behaviourState = BehaviourState::RunAndTumble;
 			}
 			break;
 
@@ -92,8 +123,8 @@ Vector2D& OrganismAI::getRandomDirection() {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> dis(
-		-2,
-		2);
+		-1,
+		1);
 
 	direction.x = dis(gen);
 	direction.y = dis(gen);
@@ -109,18 +140,16 @@ void OrganismAI::runAndTumble() {
 }
 
 void OrganismAI::checkForNutrients() {
-	auto& nutrients(Game::Get()->getEntityManager().GetGroup(Game::groupLabels::NutrientsGroup));
+	auto& nutrients(Game::Get()->getEntityManager().
+		GetGroup(Game::groupLabels::NutrientsGroup));
 
 	for (auto& e : nutrients) {
-		if (Collision::AABB(collider->collider, e->GetComponent<ColliderComponent>().collider))
+		if (Collision::AABB(collider->collider, e->
+			GetComponent<ColliderComponent>().collider))
 		{
 			caughtNutrient = &e->GetComponent<Nutrient>();
 			actTimer = 0;
 			isNutrientFound = true;
-			LOG_TRACE("Organism {} Collider hit nutrient {}",
-				entity->GetComponent<OrganismComponent>().getID(),
-				caughtNutrient->getID()
-			);
 		}
 	}
 }
@@ -136,7 +165,7 @@ void OrganismAI::absorbNutrient() {
 		caughtNutrient->caught = true;
 		caughtNutrient->organismPos = transform->position;
 
-		if (organism->curEnergy < organism->genome->m_DNA.energyCapacity) {
+		if (organism->curEnergy < organism->genome.energyCapacity) {
 			if (caughtNutrient->curEnergy > 0)
 				organism->curEnergy += absorbSpeed;
 
@@ -145,6 +174,28 @@ void OrganismAI::absorbNutrient() {
 			/* Increase the fitness while absorbing nutrients */
 			organism->fitness += 0.05f;
 		}
+	}
+}
+
+void OrganismAI::reproduce(Genes* genes) {
+	if (!reproduced) {
+		reproduced = true;
+		reproduceInterval = 0;
+		organism->species->addOrganism(*genes, true);
+
+		/* Set X position to the parent */
+		organism->species->organisms.back()->
+			entity->GetComponent<TransformComponent>().
+			position.x = transform->position.x;
+
+		/* Set y position to the parent */
+		organism->species->organisms.back()->
+			entity->GetComponent<TransformComponent>().
+			position.y = transform->position.y;
+
+		organism->curEnergy -= 10;
+
+		LOG_INFO("Organism {} reproduced", organism->getID());
 	}
 }
 
@@ -161,6 +212,9 @@ std::string OrganismAI::getCurrentBehaviour() {
 	}
 	if (behaviourState == BehaviourState::Absorbing) {
 		result = "Absorbing nutrient";
+	}
+	if (behaviourState == BehaviourState::Evaluate) {
+		result = "Evaluating";
 	}
 
 	return result;

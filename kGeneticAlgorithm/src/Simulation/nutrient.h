@@ -1,7 +1,7 @@
 #pragma once
 #include "config.h"
 
-#include "Entities/Components.h"
+#include "Components/Components.h"
 
 #include <random>
 

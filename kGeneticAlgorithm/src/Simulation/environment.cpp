@@ -4,7 +4,7 @@
 
 #include "organism.h"
 
-#include "Entities/Components.h"
+#include "Components/Components.h"
 
 void Environment::addSpeciesToEnvironment(const std::string& name,
 	const std::string& genus, const std::string& epithet)
@@ -13,11 +13,15 @@ void Environment::addSpeciesToEnvironment(const std::string& name,
 	instance.AddComponent<Species>(name, genus, epithet);
 	speciesInEnvironment.push_back(&instance.GetComponent<Species>());
 
-	LOG_INFO("Added species {} to the environment, with following traits: speed {}, energy capacity {}",
-		instance.GetComponent<Species>().getFormattedName(true),
-		instance.GetComponent<Species>().genes.m_DNA.speed,
-		instance.GetComponent<Species>().genes.m_DNA.energyCapacity
-	);
+	auto& species = instance.GetComponent<Species>();
+
+	LOG_INFO("Added species {} to the environment, with following traits:\n speed {}, energy capacity {}, size {}",
+		species.getFormattedName(true),
+		species.genes.speed,
+		species.genes.energyCapacity,
+		species.genes.size);
+
+	species.addOrganism();
 }
 
 Species* Environment::getSpecies(const Species* species) {
@@ -25,6 +29,9 @@ Species* Environment::getSpecies(const Species* species) {
 		if (s == species)
 			return s;
 	}
+
+	LOG_ERROR("Species is not found!");
+	return nullptr;
 }
 
 Species* Environment::getSpecies(std::string name) {
@@ -33,6 +40,9 @@ Species* Environment::getSpecies(std::string name) {
 			return s;
 		}
 	}
+
+	LOG_ERROR("Not found species with name {}", name);
+	return nullptr;
 }
 
 std::vector<Species*>& Environment::getAllSpecies()
@@ -40,15 +50,33 @@ std::vector<Species*>& Environment::getAllSpecies()
 	return speciesInEnvironment;
 }
 
+void Environment::makeExtinct(Species* species) {
+	for (auto& it : speciesInEnvironment) {
+		if (it == species) {
+			it->entity->Destroy();
+			speciesInEnvironment.erase(speciesInEnvironment.begin()
+				+ getSpeciesIndex(species));
 
-void Environment::clearOrganisms() {
-	auto& group(Game::Get()->getEntityManager().
-		GetGroup(Game::groupLabels::OrganismsGroup));
+			/* Clear the population */
+			it->clearOrganisms();
 
-	if (!group.empty())
-		for (auto& e : group) {
-			e->Destroy();
+			LOG_INFO("Species {} has gone extinct!",
+				species->getFormattedName(false));
 		}
+	}
+}
+
+int Environment::getSpeciesIndex(Species* species) {
+	std::vector<Species*>::iterator it =
+		std::find(speciesInEnvironment.begin(),speciesInEnvironment.end(), species);
+
+	if (it != speciesInEnvironment.end()) {
+		return std::distance(speciesInEnvironment.begin(), it);
+	}
+	else {
+		LOG_ERROR("Index of species {} is not found!", species->getID());
+		return NULL;
+	}
 }
 
 void Environment::spawnNutrients(int amount) {
