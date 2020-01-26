@@ -8,6 +8,8 @@
 #include <array>
 #include <stdint.h>
 
+/* Source: https://github.com/carlbirch/BirchEngine */
+
 class Component;
 class Entity;
 class EntityManager;
