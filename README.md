@@ -4,4 +4,4 @@ Kasterisk's repository for learning C++ and experimenting with (what hopefully w
 ### Note
 This effort is evidently still in its very **earliest** stage, so no full-fledged working GA for now, as most works are still being done for the frameworks itself (basic game engine things).
 
-But if you want to generate the project anyway, make sure to clone the repository with `--recursive` to also fetch all of the submodules and then simply use one of the .bat files that match your installed Visual Studio version (Visual Studio 2019 for vs16 or 2017 for vs15).
+For a future reminder, make sure to clone the repository with `--recursive` to also fetch all of the submodules and then simply use one of the .bat files that match your installed Visual Studio version (Visual Studio 2019 for vs16 or 2017 for vs15).
