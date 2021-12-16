@@ -66,7 +66,7 @@ void GameGUI::OnImGuiRender()
 
 					ImGui::SameLine();
 
-					if (ImGui::Button("Extirpate", ImVec2(100, 25))) {
+					if (ImGui::Button("Make Extinct", ImVec2(100, 25))) {
 						Game::Get()->getEnvironment().
 							makeExtinct(species[s]);
 					}

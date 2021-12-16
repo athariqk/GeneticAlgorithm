@@ -1,5 +1,5 @@
 #include "Collision.h"
-#include "Entities/ColliderComponent.h"
+#include "Components/ColliderComponent.h"
 
 bool Collision::AABB(const GPU_Rect& rectA, const GPU_Rect& rectB) {
 	if (rectA.x + rectB.w >= rectB.x &&
