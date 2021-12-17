@@ -40,7 +40,7 @@ void RigidBodyComponent::OnDraw()
 			body->GetPosition().y - transform->height * transform->scale / 2,
 			body->GetPosition().x + transform->width * transform->scale / 2,
 			body->GetPosition().y + transform->height * transform->scale / 2,
-			SDL_Color{255, 255, 255, 255});
+			SDL_Color{ 255, 255, 255, 255 });
 	}
 }
 

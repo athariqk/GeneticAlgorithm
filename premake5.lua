@@ -83,7 +83,7 @@ project "kGeneticAlgorithm"
 		"Box2D",
 		"SDL2_gpu.lib",
 		"SDL2_gpu_s.lib",
-		"opengl32.lib",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"

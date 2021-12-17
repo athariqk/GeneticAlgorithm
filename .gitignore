@@ -9,4 +9,4 @@ bin-int/
 **.vcxproj.filters
 **.vcxproj.user
 
-**.lua.bak
+**.**.bak

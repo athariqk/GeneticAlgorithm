@@ -19,7 +19,8 @@ void OrganismAI::OnInit() {
 	if (transform == NULL) {
 		LOG_ERROR("Agent has no transform component!");
 		runAI = false;
-	} else{
+	}
+	else {
 		runAI = true;
 	}
 }
@@ -36,7 +37,7 @@ void OrganismAI::OnUpdate(float delta) {
 		case BehaviourState::Idling:
 			hasMoved = false;
 			actTimer++;
-			
+
 			if (actTimer > 0.01f) {
 				behaviourState = BehaviourState::RunAndTumble;
 				actTimer = 0;
@@ -129,7 +130,7 @@ Vector2D& OrganismAI::getRandomDirection() {
 }
 
 void OrganismAI::runAndTumble() {
-	if(!hasMoved) {
+	if (!hasMoved) {
 		hasMoved = true;
 		rb->ApplyLinearImpulse(getRandomDirection() * moveSpeed * 100000);
 	}
