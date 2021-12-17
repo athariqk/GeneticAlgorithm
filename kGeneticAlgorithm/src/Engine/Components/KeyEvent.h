@@ -10,7 +10,7 @@ public:
     KeyEvent() {}
     ~KeyEvent() {}
 
-    void OnUpdate() override
+    void OnUpdate(float delta) override
     {
         if (Game::Get()->m_event.type == SDL_KEYDOWN) {
             switch (Game::Get()->m_event.key.keysym.sym) {

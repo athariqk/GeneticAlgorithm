@@ -26,7 +26,7 @@ public:
 	~OrganismAI() {}
 
 	void OnInit() override;
-	void OnUpdate() override;
+	void OnUpdate(float delta) override;
 
 	void runAndTumble();
 	void absorbNutrient();
@@ -47,7 +47,7 @@ private:
 	BehaviourState behaviourState;
 	OrganismComponent* organism;
 	TransformComponent* transform;
-	ColliderComponent* collider;
+	RigidBodyComponent* rb;
 	Nutrient* caughtNutrient;
 
 	float actInterval = 10;

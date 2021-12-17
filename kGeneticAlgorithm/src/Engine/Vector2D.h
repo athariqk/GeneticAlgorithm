@@ -1,6 +1,6 @@
 #pragma once
 
-class Vector2D {
+struct Vector2D {
 public:
     float x, y;
 
@@ -26,7 +26,8 @@ public:
 	Vector2D& operator*(const int& i);
 	Vector2D& Zero();
 
-    float length() const;
+    float Length() const;
+	float LengthSqrd() const;
 
 	static Vector2D& Lerp(const Vector2D& vec1, const Vector2D& vec2, float amount);
 

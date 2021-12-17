@@ -8,13 +8,10 @@
 struct TransformComponent : public Component {
 public:
 	Vector2D position;
-	Vector2D velocity;
 
-	int height = 32;
-	int width = 32;
+	float height = 32;
+	float width = 32;
 	float scale = 1;
-
-	int speed = 3;
 
 	TransformComponent() {
 		position.Zero();
@@ -40,26 +37,21 @@ public:
         scale = sc;
     }
 
+	//! \brief Construct with x, y and w, h size parameter
+	TransformComponent(float x, float y, float w, float h)
+	{
+		position.x = x;
+		position.y = y;
+		width = w;
+		height = h;
+	}
+
 	//! \brief  Construct with all transform elements parameter
-	TransformComponent(float x, float y, int w, int h, float sc) {
+	TransformComponent(float x, float y, float w, float h, float sc) {
 		position.x = x;
 		position.y = y;
 		width = w;
 		height = h;
 		scale = sc;
 	}
-
-	void OnInit() override
-    {
-        velocity.Zero();
-    }
-
-	void OnUpdate() override
-    {
-		/* Kind of a hackish way to move the camera
-		( object position.axis - camera.axis ) might need to redo this properly */
-        position.x += static_cast<int>(velocity.x * speed) - Game::camera.x; 
-		position.y += static_cast<int>(velocity.y * speed) - Game::camera.y;
-    }
-
 };

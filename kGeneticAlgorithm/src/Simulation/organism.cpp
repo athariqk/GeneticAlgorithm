@@ -9,9 +9,8 @@ void OrganismComponent::OnInit()
 	// Add all of the neccesary components
 	transform = &entity->AddComponent<TransformComponent>
 		(std::rand() % WINDOW_WIDTH + 10, std::rand() % WINDOW_HEIGHT + 10,
-			genome.size, genome.size, genome.size);
-
-	collider = &entity->AddComponent<ColliderComponent>("organism");
+			genome.size, genome.size);
+	rb = &entity->AddComponent<RigidBodyComponent>();
 	ai = &entity->AddComponent<OrganismAI>(genome.speed, 50);
 
 	membraneColour = genome.membraneColour;
@@ -19,7 +18,7 @@ void OrganismComponent::OnInit()
 	fitness = 0;
 }
 
-void OrganismComponent::OnUpdate() {
+void OrganismComponent::OnUpdate(float delta) {
 	curEnergy -= 0.02f;
 	fitness -= 0.005f;
 
@@ -37,19 +36,12 @@ void OrganismComponent::OnUpdate() {
 		curEnergy = genome.energyCapacity;
 		fitness = 100;
 	}
-
-	if (Game::Get()->getGUI().debugMode) {
-		collider->debug = true;
-	}
-	else {
-		collider->debug = false;
-	}
 }
 
 void OrganismComponent::OnDraw()
 {
 	circleShape.DrawCircle(transform->position.x, transform->position.y,
-		transform->width, membraneColour, true, true);
+		transform->width / 2, membraneColour, true, true);
 }
 
 std::string OrganismComponent::getSpeciesName()

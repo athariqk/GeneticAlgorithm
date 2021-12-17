@@ -5,8 +5,6 @@
 
 #include "Simulation/environment.h"
 
-#include "Collision.h"
-
 #include <random>
 #include <ctime>
 
@@ -15,19 +13,18 @@ void OrganismAI::OnInit() {
 
 	/* Get all of the neccesary components */
 	transform = &entity->GetComponent<TransformComponent>();
-	collider = &entity->GetComponent<ColliderComponent>();
 	organism = &entity->GetComponent<OrganismComponent>();
+	rb = &entity->GetComponent<RigidBodyComponent>();
 
 	if (transform == NULL) {
 		LOG_ERROR("Agent has no transform component!");
 		runAI = false;
 	} else{
-		transform->speed = moveSpeed;
 		runAI = true;
 	}
 }
 
-void OrganismAI::OnUpdate() {
+void OrganismAI::OnUpdate(float delta) {
 	if (runAI) {
 		if (organism->curEnergy > organism->
 			genome.energyCapacity / 2)
@@ -89,7 +86,6 @@ void OrganismAI::OnUpdate() {
 
 		case BehaviourState::Evaluate:
 			actTimer++;
-			transform->velocity.Zero();
 
 			if (organism->curEnergy > organism->genome.
 				energyCapacity / 2 && reproduceInterval > 100)
@@ -135,23 +131,12 @@ Vector2D& OrganismAI::getRandomDirection() {
 void OrganismAI::runAndTumble() {
 	if(!hasMoved) {
 		hasMoved = true;
-		transform->velocity = getRandomDirection();
+		rb->ApplyLinearImpulse(getRandomDirection() * moveSpeed * 100000);
 	}
 }
 
 void OrganismAI::checkForNutrients() {
-	auto& nutrients(Game::Get()->getEntityManager().
-		GetGroup(Game::groupLabels::NutrientsGroup));
-
-	for (auto& e : nutrients) {
-		if (Collision::AABB(collider->collider, e->
-			GetComponent<ColliderComponent>().collider))
-		{
-			caughtNutrient = &e->GetComponent<Nutrient>();
-			actTimer = 0;
-			isNutrientFound = true;
-		}
-	}
+	auto& nutrients(Game::Get()->getEntityManager().GetGroup(Game::groupLabels::NutrientsGroup));
 }
 
 void OrganismAI::absorbNutrient() {
@@ -160,8 +145,6 @@ void OrganismAI::absorbNutrient() {
 		isNutrientFound = false;
 	}
 	else {
-		transform->velocity.Zero();
-
 		caughtNutrient->caught = true;
 		caughtNutrient->organismPos = transform->position;
 

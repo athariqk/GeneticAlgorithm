@@ -99,8 +99,13 @@ Vector2D& Vector2D::Zero() {
 	return* this;
 }
 
-float Vector2D::length() const {
+float Vector2D::Length() const {
     return (float)std::sqrt(x * x + y * y);
+}
+
+float Vector2D::LengthSqrd() const
+{
+	return x * x + y * y;
 }
 
 Vector2D& Vector2D::Lerp(const Vector2D& vec1, 

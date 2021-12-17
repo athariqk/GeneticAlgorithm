@@ -12,8 +12,8 @@
 #include <string>
 
 class Environment;
-
 class GameGUI;
+class Physics2D;
 
 class Game {
 public:
@@ -22,7 +22,7 @@ public:
 
 	void Init(const char* title, int width, int height, bool fullscreen);
 	void HandleEvents();
-	void Update();
+	void Update(float delta);
 	void Render();
 	void Clean();
 
@@ -34,6 +34,7 @@ public:
 	EntityManager& getEntityManager();
 	Environment& getEnvironment();
 	GameGUI& getGUI();
+	Physics2D& getPhysics();
 
 	static GPU_Rect camera;
 	static SDL_Event m_event;

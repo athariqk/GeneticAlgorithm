@@ -5,7 +5,6 @@
 
 #include "Components/Components.h"
 #include "PrimitiveShape.h"
-#include "Collision.h"
 
 #include <string>
 #include <vector>
@@ -31,7 +30,7 @@ public:
 	~OrganismComponent() {}
 
 	void OnInit() override;
-	void OnUpdate() override;
+	void OnUpdate(float delta) override;
 	void OnDraw() override;
 
 	Species* species;
@@ -50,9 +49,8 @@ public:
 private:
 	/* Components */
 	PrimitiveShape circleShape;
-	ColliderComponent* collider;
 	TransformComponent* transform;
-	SpriteComponent* sprite;
+	RigidBodyComponent* rb;
 
 	size_t id = 0;
 

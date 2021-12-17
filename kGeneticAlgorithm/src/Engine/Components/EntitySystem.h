@@ -43,7 +43,7 @@ public:
     Entity* entity;
 
     virtual void OnInit() {}
-    virtual void OnUpdate() {}
+    virtual void OnUpdate(float delta) {}
     virtual void OnDraw() {}
     virtual void OnEvent() {}
     virtual void OnClear() {}
@@ -56,10 +56,10 @@ public:
     Entity(EntityManager& mManager) :
 		manager(mManager) {}
 
-    void OnUpdate()
+    void OnUpdate(float delta)
     {
         for (auto& c : components)
-            c->OnUpdate();
+            c->OnUpdate(delta);
     }
 
     void OnDraw()
@@ -134,10 +134,10 @@ private:
 
 class EntityManager {
 public:
-    void Update()
+    void Update(float delta)
     {
         for (auto& e : entities)
-            e->OnUpdate();
+            e->OnUpdate(delta);
     }
 
     void Draw()

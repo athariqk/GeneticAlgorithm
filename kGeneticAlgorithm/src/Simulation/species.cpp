@@ -13,7 +13,7 @@ Species::Species(const std::string& name, const std::string& genus,
 	epithet(epithet)
 {}
 
-void Species::OnUpdate() {
+void Species::OnUpdate(float delta) {
 	if (organisms.empty()) {
 		Game::Get()->getEnvironment().makeExtinct(this);
 	}

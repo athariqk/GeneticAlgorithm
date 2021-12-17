@@ -10,7 +10,7 @@ public:
 	Genes() {
 		energyCapacity = getRandomValue(10, 100);
 		speed = getRandomValue(1, 3);
-		size = getRandomValue(5, 10);
+		size = getRandomValue(10, 30);
 		membraneColour = {
 			(Uint8)getRandomValue(1, 255),
 			(Uint8)getRandomValue(1,255),

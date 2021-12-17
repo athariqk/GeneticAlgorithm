@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 	const int frameDelay = 1000 / fps;
 
 	uint64_t frameStart;
-	int frameTime;
+	int frameTime = 0;
 
 	Game* game = new Game();
 
@@ -21,7 +21,8 @@ int main(int argc, char* argv[]) {
 		frameStart = SDL_GetTicks();
 
 		game->HandleEvents();
-		game->Update();
+		// TODO: passing frameTime might be wrong
+		game->Update(frameTime);
 		game->Render();
 
 		frameTime = SDL_GetTicks() - frameStart;

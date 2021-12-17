@@ -8,14 +8,16 @@
 
 #include "Vector2D.h"
 #include "Components/Components.h"
+#include "Physics/Physics2D.h"
 
 EntityManager	entityManager;
+Physics2D		physics2d;
 GameGUI			gui;
 Environment		env;
 Game*			Game::staticInstance	= nullptr;
 SDL_Event		Game::m_event;
 // There is a method in SDL-GPU for a camera
-// (GPU_Camera), maybe this could be used instead?
+// (GPU_Camera), maybe it could be used instead?
 GPU_Rect		Game::camera			= { 0,0, WINDOW_WIDTH, WINDOW_HEIGHT };
 
 Game::Game()
@@ -59,6 +61,9 @@ void Game::Init(const char* title, int width, int height, bool fullscreen)
 	// Initialize ImGui
 	gui.OnInit();
 
+	// Initialize physics
+	physics2d.Init();
+
 	auto& controller(entityManager.AddEntity());
 	controller.AddComponent<KeyEvent>();
 
@@ -95,10 +100,11 @@ void Game::HandleEvents()
 	}
 }
 
-void Game::Update()
+void Game::Update(float delta)
 {
 	entityManager.Refresh();
-	entityManager.Update();
+	physics2d.Step();
+	entityManager.Update(delta);
 }
 
 void Game::Render()
@@ -133,6 +139,10 @@ Environment& Game::getEnvironment() {
 
 GameGUI& Game::getGUI() {
 	return gui;
+}
+
+Physics2D& Game::getPhysics() {
+	return physics2d;
 }
 
 void Game::Clean()

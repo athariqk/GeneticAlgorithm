@@ -24,6 +24,7 @@ public:
 		}
 	}
 
+	// Parameters doesn't work
 	void DrawRectangle(float posX, float posY, float size) {
 		GPU_Rectangle(Game::Get()->getWindow().GetTarget(), 10, 10,
 			40, 60, SDL_Color{ 255, 255, 255 });

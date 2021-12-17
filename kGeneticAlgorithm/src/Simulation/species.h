@@ -19,7 +19,7 @@ public:
 		const std::string& epithet);
 	~Species() {}
 
-	void OnUpdate() override;
+	void OnUpdate(float delta) override;
 
 	//! \brief Spawn a single organism
 	void addOrganism();
