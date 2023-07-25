@@ -1,4 +1,4 @@
-# Kaster-GeneticAlgorithm
+# Athriq's GeneticAlgorithm
 Personal repository for learning C++ and experimenting with (what hopefully would become) a semi-simple model of genetic algorithm simulation/neural network based "game"/software(?) as represented by (currently) living tiny microorganisms in a dynamic environment.
 
 ### Note
