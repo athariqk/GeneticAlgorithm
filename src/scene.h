@@ -12,65 +12,58 @@ union SDL_Event;
 
 class Scene {
 public:
-	explicit Scene(Window &m_mainWindow);
+    explicit Scene(Window &m_mainWindow);
 
-	~Scene();
+    ~Scene();
 
-	void Init();
+    void Init();
 
-	void HandleEvents();
+    void HandleEvents();
 
-	void Update(double p_delta, uint64_t p_ticks);
+    void Update(double p_delta, uint64_t p_ticks);
 
-	void Render() const;
+    void Render() const;
 
-	static void Clean();
+    static void Clean();
 
-	bool running() const { return m_running; }
+    bool running() const { return m_running; }
 
-	static Scene *Get();
+    static Scene *Get();
 
-	Window &GetWindow() const;
+    Window &GetWindow() const;
 
-	static EntityManager &GetEntityManager();
+    static EntityManager &GetEntityManager();
 
-	static Environment &GetEnvironment();
+    static Environment &GetEnvironment();
 
-	static GUI &GetGUI();
+    static GUI &GetGUI();
 
-	static Physics2D &GetPhysics();
+    static Physics2D &GetPhysics();
 
-	static AudioManager &GetAudio();
+    static AudioManager &GetAudio();
 
-	static Camera &GetCamera();
+    static Camera &GetCamera();
 
-	uint64_t &GetTick() {
-		return ticks;
-	}
+    uint64_t &GetTick() { return ticks; }
 
-	void MoveCamera(float x, float y);
+    void MoveCamera(float x, float y);
 
-	static SDL_Event m_event;
+    static SDL_Event m_event;
 
-	enum groupLabels : std::size_t {
-		NutrientsGroup,
-		SpeciesGroup,
-		OrganismsGroup,
-		Other
-	};
+    enum groupLabels : std::size_t { NutrientsGroup, SpeciesGroup, OrganismsGroup, Other };
 
 private:
-	bool m_running = false;
+    bool m_running = false;
 
-	static Scene *staticInstance;
+    static Scene *staticInstance;
 
-	Window &mainWindow;
+    Window &mainWindow;
 
-	uint64_t ticks = 0;
+    uint64_t ticks = 0;
 
-	void HandleCameraMovement(double p_delta) const;
+    void HandleCameraMovement(double p_delta) const;
 
-	const float cameraSpeed = 0.5f;
+    const float cameraSpeed = 0.5f;
 
-	bool isPanning = false;
+    bool isPanning = false;
 };
