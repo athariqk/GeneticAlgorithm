@@ -1,9 +1,9 @@
-[submodule "kGeneticAlgorithm/ThirdParty/spdlog"]
-	path = kGeneticAlgorithm/ThirdParty/spdlog
+[submodule "ThirdParty/spdlog"]
+	path = ThirdParty/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "kGeneticAlgorithm/ThirdParty/box2d"]
-	path = kGeneticAlgorithm/ThirdParty/box2d
+[submodule "ThirdParty/box2d"]
+	path = ThirdParty/box2d
 	url = https://github.com/erincatto/box2d.git
-[submodule "kGeneticAlgorithm/ThirdParty/imgui"]
-	path = kGeneticAlgorithm/ThirdParty/imgui
+[submodule "ThirdParty/imgui"]
+	path = ThirdParty/imgui
 	url = https://github.com/ocornut/imgui.git
