@@ -1,0 +1,11 @@
+#pragma once
+
+#define WINDOW_WIDTH 1040
+#define WINDOW_HEIGHT 650
+
+#define MAX_POPULATION 500
+#define INITIAL_SPECIES_POPULATION 1
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif

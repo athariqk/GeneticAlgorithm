@@ -2,6 +2,9 @@
 !premake/
 bin-int/
 
+build/
+/cmake-build-debug/
+
 # visual studio project files
 .vs/
 **.sln
@@ -9,4 +12,8 @@ bin-int/
 **.vcxproj.filters
 **.vcxproj.user
 
+.idea/
+
 **.**.bak
+
+imgui.ini
