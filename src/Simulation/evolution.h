@@ -2,13 +2,12 @@
 
 // This class will handle all of the simulation
 
-#include "species.h"
 #include "config.h"
+#include "species.h"
 
-#include <vector>
 #include <stdint.h>
+#include <vector>
 
 class Evolution {
 public:
-
 };

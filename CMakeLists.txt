@@ -12,7 +12,6 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release;Dist" CACHE STRING "Configs" FORCE)
 set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 
 add_subdirectory(ThirdParty)
 
@@ -26,7 +25,8 @@ file(GLOB_RECURSE SRC_FILES
 )
 
 # Create executable
-add_executable(kGeneticAlgorithm ${SRC_FILES})
+add_executable(kGeneticAlgorithm ${SRC_FILES}
+        src/Engine/Random.h)
 
 # Define preprocessor macros
 target_compile_definitions(kGeneticAlgorithm PRIVATE _CRT_SECURE_NO_WARNINGS)
@@ -47,6 +47,11 @@ target_link_libraries(kGeneticAlgorithm PRIVATE
 # Platform-specific settings
 if(WIN32)
     set(CMAKE_SYSTEM_VERSION latest)
+endif()
+
+if(MINGW)
+    message(STATUS "Detected MinGW, enabling static linking for libgcc and libstdc++")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
 endif()
 
 # Build configurations

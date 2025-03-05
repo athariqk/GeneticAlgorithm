@@ -7,19 +7,18 @@
 class TransformComponent;
 class Vector2D;
 
-class RigidBodyComponent : public Component
-{
+class RigidBodyComponent : public Component {
 public:
-	void OnInit() override;
-	void OnUpdate(float delta) override;
-	void OnDraw() override;
-	void OnClear() override;
+    void OnInit() override;
+    void OnUpdate(float delta) override;
+    void OnDraw() override;
+    void OnClear() override;
 
-	void ApplyLinearImpulse(const Vector2D& impulse);
-	void ApplyLinearForce(const Vector2D& force);
+    void ApplyLinearImpulse(const Vector2D &impulse);
+    void ApplyLinearForce(const Vector2D &force);
 
 private:
-	TransformComponent* transform = nullptr;
+    TransformComponent *transform = nullptr;
 
-	b2BodyId bodyId = {};
+    b2BodyId bodyId = {};
 };

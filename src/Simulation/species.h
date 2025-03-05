@@ -12,46 +12,43 @@ class OrganismComponent;
 /**
  * Equivalent to a GA Population operator
  */
-class Species : public Component
-{
+class Species : public Component {
 public:
-	Species() = default;
-	Species(const std::string& name, const std::string& genus,
-		const std::string& epithet);
-	~Species() {}
+    Species() = default;
+    Species(std::string name, std::string genus, std::string epithet);
+    ~Species() override {}
 
-	void OnUpdate(float delta) override;
+    void OnUpdate(float delta) override;
 
-	//! \brief Spawn a single organism
-	void addOrganism();
+    //! \brief Spawn a single organism
+    void addOrganism();
 
-	//! \brief Spawn a single organism with given genes
-	//! and randomly mutate it if set true
-	void addOrganism(Genes& genes, bool mutate);
+    //! \brief Spawn a single organism with given genes
+    //! and randomly mutate it if set true
+    void addOrganism(Genes &genes, bool mutate);
 
-	//! \brief Destroy a single given organism
-	void deleteOrganism(OrganismComponent* organism);
+    //! \brief Destroy a single given organism
+    void deleteOrganism(OrganismComponent *organism);
 
-	//! \brief Destroy all members of this species
-	void clearOrganisms();
+    //! \brief Destroy all members of this species
+    void clearOrganisms();
 
-	size_t getID() const;
-	size_t getPopulationCount() const;
-	int getOrganismIndex(OrganismComponent* organism);
-	std::string getFormattedName(bool identifier) const;
+    [[nodiscard]] size_t getID() const;
+    [[nodiscard]] size_t getPopulationCount() const;
+    int getOrganismIndex(OrganismComponent *organism);
+    [[nodiscard]] std::string getFormattedName(bool identifier) const;
 
-	std::vector<OrganismComponent*> organisms{};
+    std::vector<OrganismComponent *> organisms{};
 
-	int age{};
+    int age{};
 
-	std::string name{};
-	std::string genus{};
-	std::string epithet{};
+    std::string name{};
+    std::string genus{};
+    std::string epithet{};
 
-	Genes genes{};
-	int32_t generation{};
+    Genes genes{};
+    int32_t generation{};
 
 private:
-	size_t id{};
+    size_t id{};
 };
-

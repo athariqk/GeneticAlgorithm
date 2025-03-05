@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vector>
-#include <memory>
 #include <algorithm>
-#include <bitset>
 #include <array>
+#include <bitset>
+#include <memory>
+#include <vector>
 
 /* Source: https://github.com/carlbirch/BirchEngine */
 
@@ -38,29 +38,22 @@ class Component {
 public:
     Entity *entity;
 
-    virtual void OnInit() {
-    }
+    virtual void OnInit() {}
 
-    virtual void OnUpdate(float delta) {
-    }
+    virtual void OnUpdate(float delta) {}
 
-    virtual void OnDraw() {
-    }
+    virtual void OnDraw() {}
 
-    virtual void OnEvent() {
-    }
+    virtual void OnEvent() {}
 
-    virtual void OnClear() {
-    }
+    virtual void OnClear() {}
 
-    virtual ~Component() {
-    }
+    virtual ~Component() {}
 };
 
 class Entity {
 public:
-    Entity(EntityManager &mManager) : manager(mManager) {
-    }
+    Entity(EntityManager &mManager) : manager(mManager) {}
 
     void OnUpdate(float delta) {
         for (auto &c: components)
@@ -85,15 +78,11 @@ public:
     bool isEnabled() const { return enabled; }
     void Destroy() { enabled = false; }
 
-    bool hasGroup(Group mGroup) {
-        return groupBitset[mGroup];
-    }
+    bool hasGroup(Group mGroup) { return groupBitset[mGroup]; }
 
     void AddGroup(Group mGroup);
 
-    void DelGroup(Group mGroup) {
-        groupBitset[mGroup] = false;
-    }
+    void DelGroup(Group mGroup) { groupBitset[mGroup] = false; }
 
     template<typename T>
     bool hasComponent() const {
@@ -101,7 +90,7 @@ public:
     }
 
     template<typename T, typename... TArgs>
-    T &AddComponent(TArgs &&... mArgs) {
+    T &AddComponent(TArgs &&...mArgs) {
         T *c(new T(std::forward<TArgs>(mArgs)...));
         c->entity = this;
         std::unique_ptr<Component> uPtr{c};
@@ -123,7 +112,7 @@ public:
 private:
     EntityManager &manager;
     bool enabled = true;
-    std::vector<std::unique_ptr<Component> > components;
+    std::vector<std::unique_ptr<Component>> components;
 
     ComponentArray componentArray;
     ComponentBitSet componentBitSet;
@@ -155,25 +144,15 @@ public:
     void Refresh() {
         for (auto i(0u); i < maxGroups; i++) {
             auto &v(groupedEntities[i]);
-            std::erase_if(v,
-                          [i](Entity *mEntity) {
-                              return !mEntity->isEnabled() || !mEntity->hasGroup(i);
-                          });
+            std::erase_if(v, [i](Entity *mEntity) { return !mEntity->isEnabled() || !mEntity->hasGroup(i); });
         }
 
-        std::erase_if(entities,
-                      [](const std::unique_ptr<Entity> &mEntity) {
-                          return !mEntity->isEnabled();
-                      });
+        std::erase_if(entities, [](const std::unique_ptr<Entity> &mEntity) { return !mEntity->isEnabled(); });
     }
 
-    void AddToGroup(Entity *mEntity, Group mGroup) {
-        groupedEntities[mGroup].emplace_back(mEntity);
-    }
+    void AddToGroup(Entity *mEntity, Group mGroup) { groupedEntities[mGroup].emplace_back(mEntity); }
 
-    std::vector<Entity *> &GetGroup(Group mGroup) {
-        return groupedEntities[mGroup];
-    }
+    std::vector<Entity *> &GetGroup(Group mGroup) { return groupedEntities[mGroup]; }
 
     Entity &AddEntity() {
         auto e = new Entity(*this);
@@ -182,11 +161,9 @@ public:
         return *e;
     }
 
-    inline const auto &GetEntities() const {
-        return entities;
-    }
+    inline const auto &GetEntities() const { return entities; }
 
 private:
-    std::vector<std::unique_ptr<Entity> > entities;
+    std::vector<std::unique_ptr<Entity>> entities;
     std::array<std::vector<Entity *>, maxGroups> groupedEntities;
 };

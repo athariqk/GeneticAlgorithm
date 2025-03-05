@@ -8,11 +8,9 @@
 
 class PrimitiveShape {
 public:
-	/* \todo Add enum for color codes */
-	static void DrawCircle(float posX, float posY, float radius, SDL_Color
-		color, bool filled, bool edge)
-	{
-        SDL_Renderer* renderer = Scene::Get()->GetWindow().GetRenderer();
+    /* \todo Add enum for color codes */
+    static void DrawCircle(float posX, float posY, float radius, SDL_Color color, bool filled, bool edge) {
+        SDL_Renderer *renderer = Scene::Get()->GetWindow().GetRenderer();
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
         if (filled) {
@@ -43,14 +41,14 @@ public:
                 SDL_RenderPoint(renderer, x, y);
             }
         }
-	}
+    }
 
-	// Parameters doesn't work
+    // Parameters doesn't work
     static void DrawRectangle(float posX, float posY, float size) {
-        SDL_Renderer* renderer = Scene::Get()->GetWindow().GetRenderer();
+        SDL_Renderer *renderer = Scene::Get()->GetWindow().GetRenderer();
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-        SDL_FRect rect = { posX, posY, size, size };
+        SDL_FRect rect = {posX, posY, size, size};
         SDL_RenderRect(renderer, &rect);
-	}
+    }
 };

@@ -14,14 +14,14 @@ public:
     void OnImGuiEvent() const;
     void OnImGuiClear() const;
 
-	bool debugMode = false;
+    bool debugMode = false;
 
 private:
-    ImGuiLayer* imgui{};
-	bool showCreateSpecies = false;
+    ImGuiLayer *imgui{};
+    bool showCreateSpecies = false;
 
-	std::string sGenus;
-	std::string sEpithet;
+    std::string sGenus;
+    std::string sEpithet;
 
-	float xRel, yRel;
+    float xRel, yRel;
 };

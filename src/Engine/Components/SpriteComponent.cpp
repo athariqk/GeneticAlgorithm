@@ -6,32 +6,26 @@
 #include "TransformComponent.h"
 #include "Vector2D.h"
 
-SpriteComponent::SpriteComponent(const char* path)
-{
-	texture = TextureManager::LoadTexture(path);
-}
+SpriteComponent::SpriteComponent(const char *path) { texture = TextureManager::LoadTexture(path); }
 
-SpriteComponent::~SpriteComponent()
-{
-	if (texture) {
-		SDL_DestroyTexture(texture);
-	}
+SpriteComponent::~SpriteComponent() {
+    if (texture) {
+        SDL_DestroyTexture(texture);
+    }
 }
 
 void SpriteComponent::OnInit() {
-	transform = &entity->GetComponent<TransformComponent>();
+    transform = &entity->GetComponent<TransformComponent>();
 
-	destRect.w = transform->width * transform->scale;
-	destRect.h = transform->height * transform->scale;
+    destRect.w = transform->width * transform->scale;
+    destRect.h = transform->height * transform->scale;
 }
 
 void SpriteComponent::OnUpdate(float delta) {
-	const Vector2D screenPos = transform->GetScreenPosition();
+    const Vector2D screenPos = transform->GetScreenPosition();
 
-	destRect.x = screenPos.x - (destRect.w / 2);
-	destRect.y = screenPos.y - (destRect.h / 2);
+    destRect.x = screenPos.x - (destRect.w / 2);
+    destRect.y = screenPos.y - (destRect.h / 2);
 }
 
-void SpriteComponent::OnDraw() {
-	TextureManager::Draw(texture, nullptr, &destRect);
-}
+void SpriteComponent::OnDraw() { TextureManager::Draw(texture, nullptr, &destRect); }
